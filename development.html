@@ -242,180 +242,142 @@
       }
     </style>
   </head>
-  <body>
-   <div class="schedule-header-container">
-  <h1 id="date-text" class="main-title">SCHEDULE</h1>
+<body>
+  <div class="container">
+    <div class="uniform-container">
+      <div class="uniform-title">착용 유니폼</div>
+      <img id="uniform-img" src="" alt="Today Uniform" />
+    </div>
 
-  <div class="info-bar">
-    <div id="weather-display" class="weather-info">
-      서산 날씨 확인 중...
+    <div class="schedule-header-container">
+      <h1 id="date-text" class="main-title">SCHEDULE</h1>
+
+      <div class="info-bar">
+        <div id="weather-display" class="weather-info">
+          서산 날씨 확인 중...
+        </div>
+        <button id="update-btn" class="status-btn" onclick="updateStatusLabel()">
+          스케줄 갱신 전
+        </button>
+      </div>
     </div>
-    <button id="update-btn" class="status-btn" onclick="toggleStatus()">
-      스케줄 갱신 전
-    </button>
-  </div>
-</div>
-      <div id="display"></div>
-    </div>
+
     <div id="display"></div>
+  </div> <div class="bottom-link-container">
+    <a href="index.html" class="nav-btn btn-futures">
+      퓨처스 스케줄 보기
+    </a>
+    <a href="monthly.html" class="nav-btn btn-monthly">
+      월간 스케줄 보기
+    </a>
+  </div>
 
-    <div class="bottom-link-container">
-      <a href="index.html" class="nav-btn btn-futures"> 퓨처스 스케줄 보기 </a>
-      <a href="monthly.html" class="nav-btn btn-monthly"> 월간 스케줄 보기 </a>
-    </div>
+  <script>
+    /**
+     * 1. 상태 갱신 (파일 수정 시간 기준)
+     */
+    async function updateStatusLabel() {
+      const btn = document.getElementById("update-btn");
+      if (!btn) return;
+      try {
+        const response = await fetch("futures.csv?t=" + new Date().getTime(), { method: "HEAD" });
+        if (!response.ok) return;
+        const lastModified = new Date(response.headers.get("Last-Modified"));
+        const diffInHours = (new Date() - lastModified) / (1000 * 60 * 60);
 
-    <script>
-      /**
-       * 1. 상태 갱신 (development-status.txt)
-       * 내용이 '0'이면 무조건 비활성, 그 외엔 수정 후 12시간 유지
-       */
+        if (diffInHours >= 0 && diffInHours <= 12) {
+          btn.classList.add("updated");
+          btn.innerText = "스케줄 갱신 완료 ✓";
+        } else {
+          btn.classList.remove("updated");
+          btn.innerText = "스케줄 갱신 전";
+        }
+      } catch (e) { console.error("상태 로딩 실패:", e); }
+    }
 
-      async function updateStatusLabel() {
-        const btn = document.getElementById("update-btn");
-        if (!btn) return;
+    /**
+     * 2. 날씨 정보 (서산)
+     */
+    async function updateWeatherOnly() {
+      const API_KEY = "cbdcecd908e8704e65f974ca31c52b4e";
+      const cityId = "Seosan,kr";
+      const weatherDisplay = document.getElementById("weather-display");
+      try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityId}&appid=${API_KEY}&units=metric`);
+        const data = await res.json();
+        const todayForecasts = data.list.slice(0, 8);
+        const maxTemp = Math.round(Math.max(...todayForecasts.map((item) => item.main.temp_max)));
+        const icon = data.list[0].weather[0].icon;
 
-        try {
-          // 1. development.csv 파일의 정보(헤더)만 가져옵니다.
-          // t= 파라미터는 서버의 최신 상태를 즉시 반영하기 위한 캐시 방지용입니다.
-          const response = await fetch(
-            "development.csv?t=" + new Date().getTime(),
-            {
-              method: "HEAD",
-            },
-          );
+        weatherDisplay.innerHTML = `
+          <div class="weather-item" style="display: inline-flex; align-items: center;">
+            <span style="font-weight: bold; margin-right: 5px;">서산 낮기온 예상</span>
+            <span style="color: #ff6600; font-size: 1.1rem; margin-right: 5px;">${maxTemp}°</span>
+            <div style="display: inline-flex; align-items: center; justify-content: center; background-color: rgb(156, 218, 255); width: 40px; height: 40px; border-radius: 50%;">
+              <img src="https://openweathermap.org/img/wn/${icon}.png" style="width: 40px; height: 40px;">
+            </div>
+          </div>`;
+      } catch (error) { console.error("날씨 실패:", error); }
+    }
 
-          if (!response.ok) return;
+    /**
+     * 3. 유니폼 이미지 로드
+     */
+    async function loadUniformImage(targetDate) {
+      const imgElement = document.getElementById("uniform-img");
+      if (!imgElement) return;
+      try {
+        const res = await fetch("uniforms/uniform.csv?t=" + new Date().getTime());
+        const data = await res.text();
+        const match = data.trim().split("\n").find((row) => row.startsWith(targetDate));
+        if (match) {
+          imgElement.src = `uniforms/${match.split(",")[1].trim()}`;
+          imgElement.style.display = "inline-block";
+        }
+      } catch (e) { console.error("유니폼 로드 실패"); }
+    }
 
-          // 2. 파일의 최종 수정 시간을 계산합니다.
-          const lastModified = new Date(response.headers.get("Last-Modified"));
-          const diffInHours = (new Date() - lastModified) / (1000 * 60 * 60);
+    /**
+     * 4. 메인 실행
+     */
+    async function run() {
+      const now = new Date();
+      if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
+      const dateStr = now.toISOString().split("T")[0];
 
-          // 3. 12시간 룰 적용
-          if (diffInHours >= 0 && diffInHours <= 12) {
-            btn.classList.add("updated");
-            btn.innerText = "스케줄 갱신 완료 ✓";
+      document.getElementById("date-text").innerText = `${dateStr} FUTURES SCHEDULE`;
+
+      updateWeatherOnly();
+      loadUniformImage(dateStr);
+      updateStatusLabel();
+
+      try {
+        const res = await fetch("futures.csv?t=" + new Date().getTime());
+        const csvData = await res.text();
+        const rows = csvData.trim().split("\n");
+        let html = `<table><colgroup><col style="width: 8%;"><col style="width: 42%;"><col style="width: 8%;"><col style="width: 42%;"></colgroup>`;
+
+        rows.forEach((row, index) => {
+          const cols = row.split(",");
+          html += "<tr>";
+          if (index === 0) {
+            html += `<td colspan="2" class="main-header center-line">${cols[0] || "투수"}</td>`;
+            html += `<td colspan="2" class="main-header">${cols[2] || "야수"}</td>`;
+          } else if (index === rows.length - 1) {
+            html += `<td class="col-time">${cols[0] || "기타"}</td><td colspan="3" class="col-content">${cols[1] || ""}</td>`;
           } else {
-            btn.classList.remove("updated");
-            btn.innerText = "스케줄 갱신 전";
+            cols.forEach((col, colIndex) => {
+              const isPlayer = col.includes("선수명단");
+              const cellClass = isPlayer ? "player-list-cell" : colIndex % 2 === 0 ? "col-time" : "col-content";
+              html += `<td class="${cellClass} ${colIndex === 1 ? "center-line" : ""}">${col || ""}</td>`;
+            });
           }
-        } catch (e) {
-          console.error("상태 로딩 실패:", e);
-        }
-      }
+          html += "</tr>";
+        });
+        document.getElementById("display").innerHTML = html + "</table>";
+      } catch (e) { document.getElementById("display").innerHTML = "<p>CSV 로드 실패</p>"; }
+    }
 
-      /**
-       * 2. 날씨 정보 (서산)
-       */
-      async function updateWeatherOnly() {
-        const API_KEY = "cbdcecd908e8704e65f974ca31c52b4e";
-        const cityId = "Seosan,kr";
-        const weatherDisplay = document.getElementById("weather-display");
-
-        try {
-          const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?q=${cityId}&appid=${API_KEY}&units=metric`,
-          );
-          const data = await res.json();
-
-          const todayForecasts = data.list.slice(0, 8);
-          const maxTemp = Math.round(
-            Math.max(...todayForecasts.map((item) => item.main.temp_max)),
-          );
-          const icon = data.list[0].weather[0].icon;
-
-          weatherDisplay.innerHTML = `
-      <div class="weather-item" style="display: inline-block; margin-right: 15px; vertical-align: middle;">
-          <span class="city-name" style="font-weight: bold;">서산 낮기온 예상</span>
-          <span class="max-temp" style="color: #ff6600; font-size: 1.5rem;">${maxTemp}°</span>
-          <div style="display: inline-flex; align-items: center; justify-content: center; background-color: rgb(156, 218, 255); width: 40px; height: 40px; border-radius: 50%; margin-left: 5px; vertical-align: middle;">
-            <img src="https://openweathermap.org/img/wn/${icon}@2x.png" style="width: 40px; height: 40px;">
-          </div>
-        </div>`;
-        } catch (error) {
-          console.error("날씨 실패:", error);
-        }
-      }
-
-      /**
-       * 3. 유니폼 이미지
-       */
-      async function loadUniformImage(targetDate) {
-        const imgElement = document.getElementById("uniform-img");
-        try {
-          const res = await fetch("uniforms/uniform.csv");
-          const data = await res.text();
-          const match = data
-            .trim()
-            .split("\n")
-            .find((row) => row.startsWith(targetDate));
-          if (match) {
-            imgElement.src = `uniforms/${match.split(",")[1].trim()}`;
-            imgElement.style.display = "inline-block";
-          }
-        } catch (e) {
-          console.error("유니폼 로드 실패");
-        }
-      }
-
-      /**
-       * 4. 메인 실행 (표 그리기 포함)
-       */
-      async function run() {
-        const now = new Date();
-        const hours = now.getHours();
-        let displayDate = new Date(now);
-
-        if (hours >= 18) displayDate.setDate(now.getDate() + 1);
-
-        const dateStr = displayDate.toISOString().split("T")[0];
-
-        // 헤더 및 배지 영역 초기화
-        document.getElementById("date-text").innerText =
-          `${dateStr} DEVELOPMENT SCHEDULE`;
-        const badgeArea = document.getElementById("badge-area");
-        if (badgeArea) badgeArea.innerHTML = "";
-
-        // 비동기 데이터 로드
-        updateWeatherOnly();
-        loadUniformImage(dateStr);
-        updateStatusLabel();
-
-        // 표 그리기
-        try {
-          const res = await fetch("development.csv?t=" + new Date().getTime());
-          const csvData = await res.text();
-          const rows = csvData.trim().split("\n");
-
-          let html = `<table><colgroup><col style="width: 8%;"><col style="width: 42%;"><col style="width: 8%;"><col style="width: 42%;"></colgroup>`;
-
-          rows.forEach((row, index) => {
-            const cols = row.split(",");
-            html += "<tr>";
-            if (index === 0) {
-              html += `<td colspan="2" class="main-header center-line">${cols[0] || "투수"}</td>`;
-              html += `<td colspan="2" class="main-header">${cols[2] || "야수"}</td>`;
-            } else if (index === rows.length - 1) {
-              html += `<td class="col-time">${cols[0] || "기타"}</td><td colspan="3" class="col-content">${cols[1] || ""}</td>`;
-            } else {
-              cols.forEach((col, colIndex) => {
-                const isPlayer = col.includes("선수명단");
-                const cellClass = isPlayer
-                  ? "player-list-cell"
-                  : colIndex % 2 === 0
-                    ? "col-time"
-                    : "col-content";
-                html += `<td class="${cellClass} ${colIndex === 1 ? "center-line" : ""}">${col || ""}</td>`;
-              });
-            }
-            html += "</tr>";
-          });
-          document.getElementById("display").innerHTML = html + "</table>";
-        } catch (e) {
-          document.getElementById("display").innerHTML = "<p>CSV 로드 실패</p>";
-        }
-      }
-
-      run();
-    </script>
-  </body>
-</html>
+    run();
+  </script>
+</body></html>
