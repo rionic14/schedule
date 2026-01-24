@@ -6,6 +6,7 @@
     <style>
         @font-face { font-family: "Eagles-Bold"; src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype"); }
         @font-face { font-family: "Eagles-Gothic"; src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype"); }
+@font-face { font-family: "NotoSansJP-Bold"; src: url("Fonts/NotoSansJP-Bold.ttf") format("truetype"); }
 
         body { background-color: #f8f9fa; font-family: "Eagles-Gothic", sans-serif; padding: 0; margin: 0; }
         
@@ -15,7 +16,7 @@
             top: 0; 
             z-index: 1000; 
             background: rgb(217, 217, 217); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            box-shadow: 0 4px 15px rgb(217,217,217,); 
         }
 
         /* 상단 내비게이션 버튼 (요일 위에 배치) */
@@ -46,9 +47,9 @@
             display: flex; 
             max-width: 1400px; 
             margin: 0 auto; 
-            color: white; 
-            padding-left: 80px; 
-            font-family: "Eagles-Bold"; 
+            color: rgb(0, 0, 0); 
+            padding-left: 35px; 
+            font-family: "NotoSansJP-Bold"; 
             text-align: center; 
         }
         .header-slot { flex: 1; padding: 12px 0; border-right: 1px solid #444; font-size: 1.2rem; }
@@ -102,13 +103,13 @@
         <a href="development.html" class="top-nav-btn btn-dev">육성군 스케줄</a>
     </div>
     <div class="days-header">
-        <div class="header-slot" style="color:#ffb3ba">日</div>
+        <div class="header-slot" style="color:#ff0019">日</div>
         <div class="header-slot">月</div>
         <div class="header-slot">火</div>
         <div class="header-slot">水</div>
         <div class="header-slot">木</div>
         <div class="header-slot">金</div>
-        <div class="header-slot" style="color:#ffb3ba">土</div>
+        <div class="header-slot" style="color:#2010ff">土</div>
     </div>
 </div>
 
