@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>월간 스케줄 - K Edition</title>
+    <link rel="shortcut icon" href="images/fabicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/fabicon.ico" />
+    <link rel="icon" sizes="192x192" href="images/fabicon.ico" />
     <style>
       /* 1. 폰트 등록 */
       @font-face {
@@ -32,6 +35,52 @@
         margin: 25px 0 15px 0;
         font-size: 3rem;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 헤더 전체를 감싸는 링크 (밑줄 방지) */
+      .header-link {
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 25px;
+        margin-bottom: 15px;
+      }
+
+      /* 로고와 타이틀을 가로로 정렬 */
+      .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px; /* 로고와 글자 사이 간격 */
+      }
+
+      .emblem {
+        height: 60px; /* 글자 크기에 맞춰 로고 높이 조절 */
+        width: auto;
+      }
+
+      #main-title {
+        font-family: "Eagles-Bold", sans-serif;
+        color: #ff6600;
+        margin: 0; /* 링크 컨테이너가 간격을 조절하므로 0으로 설정 */
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 마우스 올렸을 때 전체적으로 밝아지는 효과 */
+      .header-link:hover .header-container {
+        filter: brightness(1.1);
+        transform: scale(1.02);
+        transition: all 0.2s ease;
+      }
+
+      /* 모바일용 크기 조절 */
+      @media (max-width: 768px) {
+        .emblem {
+          height: 40px;
+        }
+        #main-title {
+          font-size: 1.7rem;
+        }
       }
 
       /* 캘린더 컨테이너 (포장지) */
@@ -128,7 +177,12 @@
   </head>
   <body>
     <h1>
-      <a href="index.html" class="title-link">월간 스케줄</a>
+      <a href="index.html" class="header-link">
+        <div class="header-container">
+          <img src="images/italic.png" alt="Emblem" class="emblem" />
+          <h1 id="main-title">월간 스케줄</h1>
+        </div>
+      </a>
     </h1>
 
     <div class="calendar-container">

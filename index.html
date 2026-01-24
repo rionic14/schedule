@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>K 스케줄 - 大田理温 에디션</title>
+    <link rel="shortcut icon" href="images/fabicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/fabicon.ico" />
+    <link rel="icon" sizes="192x192" href="images/fabicon.ico" />
     <style>
       @font-face {
         font-family: "Eagles-Bold";
@@ -43,17 +46,20 @@
         margin: 0;
       }
 
-      .emblem { height: 50px; margin-left: 20px; }
+      .emblem {
+        height: 50px;
+        margin-left: 20px;
+      }
 
       /* 버튼 컨테이너 (상/하단 공용) */
-      .button-container { 
-        display: flex; 
-        gap: 15px; 
-        justify-content: center; 
-        flex-wrap: wrap; 
+      .button-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
         margin: 20px 0;
       }
-      
+
       .btn {
         padding: 15px 30px;
         font-family: "Eagles-Bold", sans-serif;
@@ -64,35 +70,43 @@
         cursor: pointer;
         transition: all 0.2s;
         min-width: 180px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
-      
-      .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
 
       /* 개별 색상 */
-      .btn-orange { background-color: rgb(252,78,0); }
-      .btn-black  { background-color: rgb(28,30,60); }
-      .btn-gray   { background-color: rgb(237, 219, 180);
-                    color: rgb(252, 78, 0); }
+      .btn-orange {
+        background-color: rgb(252, 78, 0);
+      }
+      .btn-black {
+        background-color: rgb(28, 30, 60);
+      }
+      .btn-gray {
+        background-color: rgb(237, 219, 180);
+        color: rgb(252, 78, 0);
+      }
 
-    
-/* 중앙 메인 영역 (반응형 최적화) */
+      /* 중앙 메인 영역 (반응형 최적화) */
       .main-content {
         width: 95%;
         max-width: 1100px;
-        
+
         /* 1. 높이 설정: 화면 높이의 75%를 기본으로 하되, 내용에 따라 유동적으로 */
-        height: 100vh; 
-        
+        height: 100vh;
+
         /* 2. 최소/최대 높이 제한 (너무 작거나 커지지 않게) */
-        min-height: 400px; 
+        min-height: 400px;
         max-height: 1200px;
 
         background: white;
         border: 1px solid #ccc;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         margin: 10px 0;
       }
 
@@ -100,129 +114,148 @@
       @media (max-width: 768px) {
         .main-content {
           height: 60vh; /* 모바일에서는 버튼 공간 확보를 위해 조금 줄임 */
-          width: 98%;   /* 옆 공간을 더 넓게 사용 */
+          width: 98%; /* 옆 공간을 더 넓게 사용 */
         }
       }
     </style>
   </head>
   <body>
-
     <div class="header-container">
       <h1 id="date-title"></h1>
-      <img src="images/emblem.png" alt="Emblem" class="emblem">
+      <img src="images/emblem.png" alt="Emblem" class="emblem" />
     </div>
 
     <div class="button-container">
-      <button class="btn btn-orange" onclick="location.href='futures.html'">퓨처스 스케줄 보기</button>
-      <button class="btn btn-black" onclick="location.href='development.html'">육성군 스케줄 보기</button>
-      <button class="btn btn-gray" onclick="location.href='monthly.html'">월간 스케줄 보기</button>
+      <button class="btn btn-orange" onclick="location.href = 'futures.html'">
+        퓨처스 스케줄 보기
+      </button>
+      <button
+        class="btn btn-black"
+        onclick="location.href = 'development.html'"
+      >
+        육성군 스케줄 보기
+      </button>
+      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">
+        월간 스케줄 보기
+      </button>
     </div>
 
-<div class="main-content" id="content-area">
-  </div>
+    <div class="main-content" id="content-area"></div>
 
-<script>
-  async function loadRoster() {
-    const contentArea = document.getElementById('content-area');
-    const t = new Date().getTime(); // 캐시 방지용 번호
-    
-    // 1. PDF가 있는지 먼저 확인
-    try {
-      const response = await fetch(`roster.pdf?t=${t}`, { method: 'HEAD' });
-      if (response.ok) {
-        // PDF가 있으면 PDF 뷰어 생성
-        contentArea.innerHTML = `<embed src="roster.pdf?t=${t}#navpanes=0&view=FitH" type="application/pdf" width="100%" height="100%">`;
-        return;
-      }
-    } catch (e) {}
+    <script>
+      async function loadRoster() {
+        const contentArea = document.getElementById("content-area");
+        const t = new Date().getTime(); // 캐시 방지용 번호
 
-    // 2. PDF 없으면 PNG 확인
-    try {
-      const response = await fetch(`roster.png?t=${t}`, { method: 'HEAD' });
-      if (response.ok) {
-        contentArea.innerHTML = `<img src="roster.png?t=${t}" style="width:100%; height:auto; display:block; margin:0 auto;">`;
-        return;
-      }
-    } catch (e) {}
+        // 1. PDF가 있는지 먼저 확인
+        try {
+          const response = await fetch(`roster.pdf?t=${t}`, { method: "HEAD" });
+          if (response.ok) {
+            // PDF가 있으면 PDF 뷰어 생성
+            contentArea.innerHTML = `<embed src="roster.pdf?t=${t}#navpanes=0&view=FitH" type="application/pdf" width="100%" height="100%">`;
+            return;
+          }
+        } catch (e) {}
 
- // 3. 둘 다 없으면 JPG 확인 후, 그것도 없으면 JPEG까지 확인!
-contentArea.innerHTML = `
+        // 2. PDF 없으면 PNG 확인
+        try {
+          const response = await fetch(`roster.png?t=${t}`, { method: "HEAD" });
+          if (response.ok) {
+            contentArea.innerHTML = `<img src="roster.png?t=${t}" style="width:100%; height:auto; display:block; margin:0 auto;">`;
+            return;
+          }
+        } catch (e) {}
+
+        // 3. 둘 다 없으면 JPG 확인 후, 그것도 없으면 JPEG까지 확인!
+        contentArea.innerHTML = `
   <img src="roster.jpg?t=${t}" 
        style="width:100%; height:auto; display:block; margin:0 auto;" 
        onerror="this.onerror=function(){ this.src='images/emblem.png'; this.style.width='200px'; }; this.src='roster.jpeg?t=${t}';">
 `;
-  }
+      }
 
-  function setEaglesDate() {
-    const now = new Date();
-    if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    document.getElementById('date-title').innerText = `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
-  }
+      function setEaglesDate() {
+        const now = new Date();
+        if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        document.getElementById("date-title").innerText =
+          `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
+      }
 
-  // 페이지 로드 시 두 가지 함수 모두 실행
-  window.onload = function() {
-    setEaglesDate();
-    loadRoster();
-  };
-</script>
+      // 페이지 로드 시 두 가지 함수 모두 실행
+      window.onload = function () {
+        setEaglesDate();
+        loadRoster();
+      };
+    </script>
 
     <div class="button-container">
-      <button class="btn btn-orange" onclick="location.href='futures.html'">퓨처스 스케줄 보기</button>
-      <button class="btn btn-black" onclick="location.href='development.html'">육성군 스케줄 보기</button>
-      <button class="btn btn-gray" onclick="location.href='monthly.html'">월간 스케줄 보기</button>
+      <button class="btn btn-orange" onclick="location.href = 'futures.html'">
+        퓨처스 스케줄 보기
+      </button>
+      <button
+        class="btn btn-black"
+        onclick="location.href = 'development.html'"
+      >
+        육성군 스케줄 보기
+      </button>
+      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">
+        월간 스케줄 보기
+      </button>
     </div>
 
-  <script>
-  // 1. 파일 찾아서 화면에 뿌려주는 함수 (PDF, PNG, JPG, JPEG 순서)
-  async function loadRoster() {
-    const contentArea = document.getElementById('content-area');
-    const t = new Date().getTime(); // 캐시 방지용 번호
-    const extensions = ['pdf', 'png', 'jpg', 'jpeg'];
-    
-    for (const ext of extensions) {
-      try {
-        const response = await fetch(`roster.${ext}?t=${t}`, { method: 'HEAD' });
-        if (response.ok) {
-          if (ext === 'pdf') {
-            contentArea.innerHTML = `<embed src="roster.pdf?t=${t}#navpanes=0&view=FitH" type="application/pdf" width="100%" height="100%">`;
-          } else {
-            contentArea.innerHTML = `<img src="roster.${ext}?t=${t}" style="width:100%; height:auto; display:block; margin:0 auto;">`;
-          }
-          return; // 파일 하나라도 찾으면 여기서 종료!
-        }
-      } catch (e) {}
-    }
+    <script>
+      // 1. 파일 찾아서 화면에 뿌려주는 함수 (PDF, PNG, JPG, JPEG 순서)
+      async function loadRoster() {
+        const contentArea = document.getElementById("content-area");
+        const t = new Date().getTime(); // 캐시 방지용 번호
+        const extensions = ["pdf", "png", "jpg", "jpeg"];
 
-    // 다 없으면 엠블럼 출력
-    contentArea.innerHTML = `<div style="text-align:center; padding-top:50px;">
+        for (const ext of extensions) {
+          try {
+            const response = await fetch(`roster.${ext}?t=${t}`, {
+              method: "HEAD",
+            });
+            if (response.ok) {
+              if (ext === "pdf") {
+                contentArea.innerHTML = `<embed src="roster.pdf?t=${t}#navpanes=0&view=FitH" type="application/pdf" width="100%" height="100%">`;
+              } else {
+                contentArea.innerHTML = `<img src="roster.${ext}?t=${t}" style="width:100%; height:auto; display:block; margin:0 auto;">`;
+              }
+              return; // 파일 하나라도 찾으면 여기서 종료!
+            }
+          } catch (e) {}
+        }
+
+        // 다 없으면 엠블럼 출력
+        contentArea.innerHTML = `<div style="text-align:center; padding-top:50px;">
       <img src="images/emblem.png" style="width:200px; opacity:0.3;">
       <p style="color:#ccc; font-family:'Eagles-Gothic';">업데이트된 로스터가 없습니다.</p>
     </div>`;
-  }
+      }
 
-  // 2. 날짜 설정 함수
-  function setEaglesDate() {
-    const now = new Date();
-    if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
+      // 2. 날짜 설정 함수
+      function setEaglesDate() {
+        const now = new Date();
+        if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
 
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
 
-    const title = document.getElementById('date-title');
-    if (title) {
-      title.innerText = `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
-    }
-  }
+        const title = document.getElementById("date-title");
+        if (title) {
+          title.innerText = `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
+        }
+      }
 
-  // 3. 페이지가 로드되면 위 두 함수를 한 번에 실행
-  window.onload = function() {
-    setEaglesDate();
-    loadRoster();
-  };
-</script>
+      // 3. 페이지가 로드되면 위 두 함수를 한 번에 실행
+      window.onload = function () {
+        setEaglesDate();
+        loadRoster();
+      };
+    </script>
   </body>
 </html>
