@@ -2,273 +2,274 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>월간 스케줄</title>
- <style>
-  @font-face {
-    font-family: "Eagles-Bold";
-    src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
-  }
-  @font-face {
-    font-family: "Eagles-Gothic";
-    src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
-  }
-  @font-face {
-    font-family: "NotoSansJP-Bold";
-    src: url("Fonts/NotoSansJP-Bold.ttf") format("truetype");
-  }
+    <title>월간 스케줄 - K 에디션</title>
+    <style>
+      /* 폰트 설정 */
+      @font-face {
+        font-family: "Eagles-Bold";
+        src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Eagles-Gothic";
+        src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
+      }
+      @font-face {
+        font-family: "NotoSansJP-Bold";
+        src: url("Fonts/NotoSansJP-Bold.ttf") format("truetype");
+      }
 
-  body {
-    background-color: #f8f9fa;
-    font-family: "Eagles-Gothic", sans-serif;
-    padding: 0;
-    margin: 0;
-  }
+      body {
+        background-color: #f8f9fa;
+        font-family: "Eagles-Gothic", sans-serif;
+        padding: 0;
+        margin: 0;
+      }
 
-  /* 헤더 및 내비게이션 */
-  .sticky-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgb(217, 217, 217);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
-  .top-nav-bar {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 10px 10px 5px 10px;
-    gap: 10px;
-  }
-  .top-nav-btn {
-    flex: 1;
-    text-decoration: none;
-    padding: 10px 0;
-    border-radius: 6px;
-    text-align: center;
-    font-family: "Eagles-Bold";
-    font-size: 3rem;
-    color: white;
-    transition: all 0.2s;
-  }
-  .btn-futures { background-color: rgb(252, 78, 0); }
-  .btn-dev { background-color: rgb(28, 30, 60); }
-  .top-nav-btn:hover {
-    filter: brightness(1.2);
-    transform: scale(1.01);
-  }
+      /* 헤더 영역 */
+      .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgb(217, 217, 217);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .top-nav-bar {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 10px;
+        gap: 10px;
+      }
+      .top-nav-btn {
+        flex: 1;
+        text-decoration: none;
+        padding: 12px 0;
+        border-radius: 6px;
+        text-align: center;
+        font-family: "Eagles-Bold";
+        font-size: 2.5rem;
+        color: white;
+        transition: 0.2s;
+      }
+      .btn-futures {
+        background-color: rgb(252, 78, 0);
+      }
+      .btn-dev {
+        background-color: rgb(28, 30, 60);
+      }
+      .top-nav-btn:hover {
+        filter: brightness(1.2);
+        transform: scale(1.01);
+      }
 
-  .days-header {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    color: rgb(0, 0, 0);
-    padding-left: 35px;
-    font-family: "NotoSansJP-Bold";
-    text-align: center;
-  }
-  .header-slot {
-    flex: 1;
-    padding: 12px 0;
-    border-right: 1px solid rgb(217, 217, 217);
-    font-size: 1.3rem;
-  }
+      .days-header {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-left: 35px;
+        font-family: "NotoSansJP-Bold";
+        text-align: center;
+      }
+      .header-slot {
+        flex: 1;
+        padding: 12px 0;
+        border-right: 1px solid #ccc;
+        font-size: 1.3rem;
+      }
 
-  /* 스케줄 컨테이너 */
-  .container {
-    max-width: 1400px;
-    margin: 20px auto;
-    padding: 0 10px;
-  }
-  .week-block {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 25px;
-    border: 1px solid #ddd;
-    overflow: hidden;
-  }
+      /* 타이틀 */
+      #print-title {
+        display: block;
+        text-align: center;
+        font-family: "Eagles-Bold";
+        font-size: 3.5rem;
+        color: #1c1e3c;
+        padding: 20px 0;
+        border-bottom: 5px solid rgb(252, 78, 0);
+        max-width: 1400px;
+        margin: 0 auto 20px auto;
+        cursor: pointer;
+      }
 
-  .team-row {
-    display: flex;
-    border-bottom: 1px solid #eee;
-    min-height: 30px;
-    position: relative;
-  }
-  .team-label {
-    width: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Eagles-Bold";
-    color: white;
-    flex-shrink: 0;
-    font-size: 1.9rem;
-    z-index: 20;
-  }
-  .futures-row { background-color: rgb(254, 231, 228); }
-  .futures-label { background-color: rgb(252, 78, 0); }
-  .dev-row { background-color: rgb(230, 230, 255); min-height: 60px !important; }
-  .dev-label { background-color: rgb(28, 30, 60); }
+      /* 스케줄 그리드 */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 10px;
+      }
+      .week-block {
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+        overflow: hidden;
+      }
+      .team-row {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        position: relative;
+      }
+      .team-label {
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Eagles-Bold";
+        color: white;
+        font-size: 1.9rem;
+        flex-shrink: 0;
+      }
+      .futures-row {
+        background-color: #fff5f2;
+      }
+      .futures-label {
+        background-color: rgb(252, 78, 0);
+      }
+      .dev-row {
+        background-color: #f2f2ff;
+      }
+      .dev-label {
+        background-color: rgb(28, 30, 60);
+      }
 
-  .day-slots {
-    display: flex;
-    flex-grow: 1;
-    width: calc(100% - 35px);
-    align-items: stretch;
-  }
+      .day-slots {
+        display: flex;
+        flex-grow: 1;
+        width: calc(100% - 35px);
+      }
+      .day-slot {
+        flex: 1;
+        border-right: 1px solid #eee;
+        padding: 10px;
+        height: 80px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .dev-row .day-slot {
+        height: 55px;
+      }
+      .day-slot.today {
+        outline: 3px solid #ff6600;
+        outline-offset: -3px;
+        background-color: #fff;
+      }
 
-  .day-slot {
-    flex: 1;
-    border-right: 1px solid hsla(0, 0%, 0%, 0.1);
-    padding: 12px 10px;
-    min-width: 0;
-    position: relative;
-    height: 76px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .dev-row .day-slot { height: 51px !important; padding: 8px 10px; }
-  .day-slot:hover { background-color: rgba(0, 0, 0, 0.03); }
-  .day-slot.today {
-    background-color: rgba(255, 255, 255, 0.7);
-    outline: 2px solid #ff6600;
-    outline-offset: -2px;
-  }
+      .date-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin-bottom: 5px;
+      }
+      .date-side-logo {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+      }
+      .date-label {
+        font-size: 0.95rem;
+        font-family: "NotoSansJP-Bold";
+        color: #333;
+      }
 
-  /* 날짜 및 로고 */
-  .date-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 8px;
-    width: 100%;
-    flex-wrap: nowrap;
-  }
-  .date-label {
-    font-size: 1rem;
-    color: #474747;
-    font-family: "NotoSansJP-Bold", sans-serif;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .date-side-logo {
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
+      .event-content {
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      .event-title {
+        font-weight: 800;
+        font-size: 1.4rem;
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+      }
 
-  /* 이벤트 스타일 */
-  .event-content { text-align: center; margin-bottom: 12px; }
-  .event-title { font-weight: 800; font-size: 1.54rem; display: block; white-space: nowrap; overflow: hidden; }
-  .event-info { font-weight: 600; font-size: 1.2rem; display: block; }
-  .event-desc { font-size: 1.1rem; opacity: 0.75; border-top: 1px dashed rgba(0, 0, 0, 0.1); display: block; }
+      /* 모달 스타일 최적화 */
+      #modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        backdrop-filter: blur(10px);
+      }
+      #modal-content {
+        background: white;
+        width: 80vw;
+        max-width: 800px;
+        max-height: 80vh;
+        border-radius: 24px;
+        padding: 40px;
+        overflow-y: auto;
+      }
 
-  /* 인쇄용 타이틀 */
-  #print-title {
-    display: block;
-    text-align: center;
-    font-family: "Eagles-Bold", sans-serif;
-    font-size: 3.5rem;
-    color: #1c1e3c;
-    padding: 20px 0;
-    letter-spacing: 2px;
-    border-bottom: 5px solid rgb(252, 78, 0);
-    max-width: 1400px;
-    margin: 0 auto 30px auto;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  #print-title:hover { opacity: 0.7; transform: scale(1.01); }
+      /* 모달 내부 일정 구분 */
+      #modal-content .event-content {
+        padding: 30px 0;
+        border-bottom: 4px solid rgb(28, 30, 60);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #modal-content .event-content:last-child {
+        border-bottom: none;
+      }
 
-  /* 모달 스타일 */
-  #modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    backdrop-filter: blur(8px);
-  }
-  #modal-content {
-    background: white;
-    width: 70vw;
-    height: 70vh;
-    border-radius: 24px;
-    padding: 40px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+      /* 모달 서체 설정 */
+      #modal-content .event-title {
+        font-family: "NotoSansJP-Bold" !important;
+        font-size: 3.2rem;
+        margin-bottom: 15px;
+        color: #000;
+        text-align: center;
+        overflow: visible;
+        white-space: normal;
+      }
+      #modal-content .event-info {
+        font-family: "Eagles-Gothic";
+        font-size: 2rem;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      #modal-content .event-desc {
+        font-family: "Eagles-Gothic";
+        font-size: 1.7rem;
+        width: 90%;
+        padding-top: 20px;
+        border-top: 2px dashed #ffdf74;
+        text-align: left;
+        white-space: pre-wrap;
+        line-height: 1.6;
+        color: #333;
+      }
 
-  /* 모달 내부 글자 크기 및 상세 스타일 */
-#modal-content .event-title {
-  font-size: 3rem;       /* 경기명 (예: 한화-두산) */
-  margin-bottom: 20px;
-  font-family: "Eagles-Bold";
-}
-
-#modal-content .event-info {
-  font-size: 2.2rem;     /* 장소 및 시간 */
-  margin-bottom: 20px;
-  color: #444;
-}
-
-#modal-content .event-desc {
-  font-size: 1.8rem;     /* 상세 설명 (K의 등판 기록 등) */
-  line-height: 1.5;
-  border-top: 2px dashed #eee;
-  padding-top: 20px;
-  width: 100%;
-  text-align: center;
-  white-space: pre-wrap; /* 줄바꿈 허용 */
-}
-
-  /* 색상 테마 */
-  .text-orange { color: rgb(252, 78, 0) !important; }
-  .text-navy { color: rgb(23, 35, 207) !important; }
-  .text-green { color: rgb(140, 210, 70) !important; }
-  .text-blue { color: rgb(0, 190, 210) !important; }
-  .text-red { color: rgb(255, 0, 0) !important; }
-
-  /* 인쇄 설정 */
-  @media print {
-    @page { size: A4 portrait; margin: 0.5cm; }
-    .sticky-header, .top-nav-bar, #modal-overlay { display: none !important; }
-    #print-title { font-size: 24pt; border-bottom: 2px solid #000; }
-    .day-slot { height: 60px !important; }
-    .date-side-logo { width: 20px; height: 20px; }
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  }
-</style>
-
-<body>
-  <div id="print-title" onclick="location.href='index.html'" style="cursor: pointer;">
-  퓨처스/육성군 일정표 ~(다음 6주)
-</div>
-  <div id="modal-overlay" onclick="closeModal()">
-    <div id="modal-content" onclick="event.stopPropagation()"></div>
-  </div>
+      /* 텍스트 컬러 */
+      .text-orange {
+        color: #ff6600 !important;
+      }
+      .text-navy {
+        color: #1c1e3c !important;
+      }
+      .text-red {
+        color: #ff0000 !important;
+      }
     </style>
   </head>
   <body>
-    <div id="modal-overlay" onclick="closeModal()">
-      <div id="modal-content" onclick="event.stopPropagation()"></div>
+    <div id="print-title" onclick="location.href = 'index.html'">
+      퓨처스/육성군 일정표
     </div>
 
     <div class="sticky-header">
       <div class="top-nav-bar">
-        <a href="futures.html" class="top-nav-btn btn-futures">퓨처스 스케줄</a>
-        <a href="development.html" class="top-nav-btn btn-dev">육성군 스케줄</a>
+        <a href="futures.html" class="top-nav-btn btn-futures">퓨처스</a>
+        <a href="development.html" class="top-nav-btn btn-dev">육성군</a>
       </div>
       <div class="days-header">
         <div class="header-slot" style="color: #ff0019">日</div>
@@ -286,13 +287,18 @@
         id="loading"
         style="
           text-align: center;
-          padding: 50px;
+          padding: 100px;
           font-family: &quot;Eagles-Bold&quot;;
+          font-size: 2rem;
           color: #ff6600;
         "
       >
         데이터 로딩 중...
       </div>
+    </div>
+
+    <div id="modal-overlay" onclick="closeModal()">
+      <div id="modal-content" onclick="event.stopPropagation()"></div>
     </div>
 
     <script>
@@ -316,8 +322,7 @@
         const slot = document.getElementById(slotId);
         const content = slot.querySelector(".slot-content").innerHTML;
         if (!content.trim()) return;
-        const modalContent = document.getElementById("modal-content");
-        modalContent.innerHTML = content;
+        document.getElementById("modal-content").innerHTML = content;
         document.getElementById("modal-overlay").style.display = "flex";
         document.body.style.overflow = "hidden";
       }
@@ -327,128 +332,85 @@
         document.body.style.overflow = "auto";
       }
 
-      function formatTime(dateTimeStr) {
-        if (!dateTimeStr) return "";
-        const date = new Date(dateTimeStr);
-        return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-      }
-
-
-
-      
-      async function fetchEvents(calId, start, days) {
+      async function fetchEvents(calId, start) {
         const end = new Date(start);
-        end.setDate(start.getDate() + days);
+        end.setDate(start.getDate() + 42);
         const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?key=${API_KEY}&timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&singleEvents=true&orderBy=startTime`;
-        try {
-          const response = await fetch(url);
-          const data = await response.json();
-          return data.items || [];
-        } catch (e) {
-          return [];
-        }
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.items || [];
       }
 
       function getConditionClass(text) {
         if (text.includes("휴")) return "text-red";
         if (text.includes("-한화")) return "text-orange";
         if (text.includes("한화-")) return "text-navy";
-        if (text.includes("미정")) return "text-green";
-        if (text.includes("이동")) return "text-blue";
         return "";
       }
 
       async function renderSchedule() {
-  const d = new Date();
-  const diff = d.getDate() - d.getDay();
-  const baseSunday = new Date(d.setDate(diff));
-  baseSunday.setHours(0, 0, 0, 0);
+        const d = new Date();
+        d.setDate(d.getDate() - d.getDay());
+        d.setHours(0, 0, 0, 0);
 
-  const container = document.getElementById("schedule-container");
-  const [futures, dev] = await Promise.all([
-    fetchEvents(CALENDARS[0].id, baseSunday, 42),
-    fetchEvents(CALENDARS[1].id, baseSunday, 42),
-  ]);
+        const [futures, dev] = await Promise.all([
+          fetchEvents(CALENDARS[0].id, d),
+          fetchEvents(CALENDARS[1].id, d),
+        ]);
+        const container = document.getElementById("schedule-container");
+        container.innerHTML = "";
 
-  container.innerHTML = "";
-  const weekDays = ["일", "월", "화", "수", "목", "금", "토"]; // 요일 배열 추가
+        for (let w = 0; w < 6; w++) {
+          const weekBlock = document.createElement("div");
+          weekBlock.className = "week-block";
 
-  for (let w = 0; w < 6; w++) {
-    const weekStart = new Date(baseSunday);
-    weekStart.setDate(baseSunday.getDate() + w * 7);
-    const weekBlock = document.createElement("div");
-    weekBlock.className = "week-block";
+          [futures, dev].forEach((events, idx) => {
+            const cal = CALENDARS[idx];
+            const row = document.createElement("div");
+            row.className = `team-row ${cal.rowClass}`;
+            let html = `<div class="team-label ${cal.labelClass}">${cal.name}</div><div class="day-slots">`;
 
-    [futures, dev].forEach((events, idx) => {
-      const cal = CALENDARS[idx];
-      const row = document.createElement("div");
-      row.className = `team-row ${cal.rowClass}`;
-      let rowHtml = `<div class="team-label ${cal.labelClass}">${cal.name}</div><div class="day-slots">`;
+            for (let i = 0; i < 7; i++) {
+              const cur = new Date(d);
+              cur.setDate(d.getDate() + w * 7 + i);
+              const isToday =
+                cur.toDateString() === new Date().toDateString() ? "today" : "";
+              const dayEvents = events.filter(
+                (e) =>
+                  new Date(e.start.date || e.start.dateTime).toDateString() ===
+                  cur.toDateString(),
+              );
 
-      for (let i = 0; i < 7; i++) {
-        const currentDay = new Date(weekStart);
-        currentDay.setDate(weekStart.getDate() + i);
-        const slotId = `slot-${idx}-${w}-${i}`;
-        const isToday = currentDay.toDateString() === new Date().toDateString() ? "today" : "";
-        
-        const dayEvents = events.filter(
-          (e) => new Date(e.start.date || e.start.dateTime).toDateString() === currentDay.toDateString()
-        );
+              let logos = { l: "", r: "" };
+              if (
+                idx === 0 &&
+                dayEvents.length > 0 &&
+                dayEvents[0].summary.includes("-")
+              ) {
+                const ts = dayEvents[0].summary.split("-");
+                logos.l = `<img src="teams/${ts[0].trim()}.png" class="date-side-logo" onerror="this.style.display='none'">`;
+                logos.r = `<img src="teams/${ts[1].trim().split(" ")[0]}.png" class="date-side-logo" onerror="this.style.display='none'">`;
+              }
 
-        // --- [날짜 양옆 로고 추출 로직] ---
-        let leftLogoHtml = "";
-        let rightLogoHtml = "";
-        
-        // 해당 날짜에 이벤트가 있고, 첫 번째 이벤트 제목에 '-'가 있을 때만 로고 생성
-        if (dayEvents.length > 0 && dayEvents[0].summary.includes("-")) {
-          const teams = dayEvents[0].summary.split("-");
-          const leftTeam = teams[0].trim();
-          const rightTeam = teams[1].trim().split(" ")[0]; // [P] 등 부가정보 제거
-
-          leftLogoHtml = `<img src="teams/${leftTeam}.png" class="date-side-logo" onerror="this.style.display='none'">`;
-          rightLogoHtml = `<img src="teams/${rightTeam}.png" class="date-side-logo" onerror="this.style.display='none'">`;
+              html += `<div class="day-slot ${isToday}" id="slot-${idx}-${w}-${i}" onclick="openModal(this.id)">`;
+              if (idx === 0)
+                html += `<div class="date-wrapper">${logos.l}<span class="date-label">${cur.getMonth() + 1}/${cur.getDate()}</span>${logos.r}</div>`;
+              html += `<div class="slot-content">`;
+              dayEvents.forEach((e) => {
+                html += `<div class="event-content ${getConditionClass(e.summary)}">
+                  <span class="event-title">${e.summary}</span>
+                  <span class="event-info">${e.location || ""}</span>
+                  ${e.description ? `<span class="event-desc">${e.description}</span>` : ""}
+                </div>`;
+              });
+              html += `</div></div>`;
+            }
+            row.innerHTML = html + `</div>`;
+            weekBlock.appendChild(row);
+          });
+          container.appendChild(weekBlock);
         }
-
-        // 요일 계산
-        const dayLabel = weekDays[currentDay.getDay()];
-        
-        // 날짜 라벨 HTML (퓨처스 행인 idx === 0일 때만 로고와 함께 출력)
-        const dateLabelHtml = idx === 0 
-          ? `<div class="date-wrapper">
-               ${leftLogoHtml}
-               <span class="date-label">${currentDay.getMonth() + 1}/${currentDay.getDate()} (${dayLabel})</span>
-               ${rightLogoHtml}
-             </div>` 
-          : "";
-
-        rowHtml += `<div class="day-slot ${isToday}" id="${slotId}" onclick="openModal('${slotId}')">
-                      ${dateLabelHtml}
-                      <div class="slot-content">`;
-
-        dayEvents.forEach((e) => {
-          const titleText = e.summary || "";
-          const startTime = formatTime(e.start.dateTime);
-          const infoText = (e.location || "") + (startTime ? ` [${startTime}]` : "");
-          const cClass = getConditionClass(titleText);
-          
-          // 이벤트 타이틀에는 로고 없이 텍스트만 출력
-          rowHtml += `<div class="event-content ${cClass}">
-                        <span class="event-title">${titleText}</span>
-                        ${infoText ? `<span class="event-info">${infoText}</span>` : ""}
-                        ${e.description ? `<span class="event-desc">${e.description}</span>` : ""}
-                      </div>`;
-        });
-        rowHtml += `</div></div>`;
       }
-      rowHtml += `</div>`;
-      row.innerHTML = rowHtml;
-      weekBlock.appendChild(row);
-
-      // (기존 setTimeout 생략 - 도트 표시 로직 유지)
-    });
-    container.appendChild(weekBlock);
-  }
-}
       renderSchedule();
     </script>
   </body>
