@@ -29,7 +29,6 @@
         align-items: center;
       }
 
-      /* 헤더 영역 */
       .header-container {
         display: flex;
         align-items: center;
@@ -46,12 +45,8 @@
         margin: 0;
       }
 
-      .emblem {
-        height: 50px;
-        margin-left: 20px;
-      }
+      .emblem { height: 50px; margin-left: 20px; }
 
-      /* 버튼 컨테이너 */
       .button-container {
         display: flex;
         gap: 15px;
@@ -73,16 +68,10 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
-      .btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-      }
-
       .btn-orange { background-color: rgb(252, 78, 0); }
       .btn-black { background-color: rgb(28, 30, 60); }
       .btn-gray { background-color: rgb(237, 219, 180); color: rgb(252, 78, 0); }
 
-      /* 중앙 메인 영역 */
       .main-content {
         width: 95%;
         max-width: 1100px;
@@ -95,14 +84,13 @@
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         margin: 10px 0;
-        position: relative; /* 방어막의 기준 */
+        position: relative;
       }
 
       @media (max-width: 768px) {
         .main-content { height: 60vh; width: 98%; }
       }
 
-      /* 클릭/드래그 방지용 투명 레이어 */
       .click-shield {
         position: absolute;
         top: 0;
@@ -110,7 +98,18 @@
         width: 100%;
         height: 100%;
         z-index: 10;
-        background: rgba(0, 0, 0, 0); /* 투명 */
+        background: rgba(0, 0, 0, 0);
+      }
+      
+      /* Vercel에서 HTTP 차단 시 안내 메시지 */
+      .error-msg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #888;
+        display: none;
       }
     </style>
   </head>
@@ -121,48 +120,44 @@
     </div>
 
     <div class="button-container">
-      <button class="btn btn-orange" onclick="location.href = 'futures.html'">퓨처스 스케줄 보기</button>
-      <button class="btn btn-black" onclick="location.href = 'development.html'">육성군 스케줄 보기</button>
-      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">월간 스케줄 보기</button>
+      <button class="btn btn-orange" onclick="location.href = 'futures.html'">퓨처스 스케줄</button>
+      <button class="btn btn-black" onclick="location.href = 'development.html'">육성군 스케줄</button>
+      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">월간 스케줄</button>
     </div>
 
     <div class="main-content" id="content-area">
-      </div>
+        <div id="error-msg" class="error-msg">
+            <p>화면이 나오지 않는다면 주소창의 보안 설정을 확인해주세요.</p>
+        </div>
+    </div>
 
     <div class="button-container">
-      <button class="btn btn-orange" onclick="location.href = 'futures.html'">퓨처스 스케줄 보기</button>
-      <button class="btn btn-black" onclick="location.href = 'development.html'">육성군 스케줄 보기</button>
-      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">월간 스케줄 보기</button>
+      <button class="btn btn-orange" onclick="location.href = 'futures.html'">퓨처스 스케줄</button>
+      <button class="btn btn-black" onclick="location.href = 'development.html'">육성군 스케줄</button>
+      <button class="btn btn-gray" onclick="location.href = 'monthly.html'">월간 스케줄</button>
     </div>
 
     <script>
-      // 1. 날짜 설정 (저녁 6시 이후면 내일 날짜)
       function setEaglesDate() {
         const now = new Date();
         if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
-
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, "0");
         const day = String(now.getDate()).padStart(2, "0");
-
-        const title = document.getElementById("date-title");
-        if (title) {
-          title.innerText = `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
-        }
+        document.getElementById("date-title").innerText = `${year}-${month}-${day} HANWHA EAGLES ROSTER`;
       }
 
-      // 2. 외부 로스터 페이지 로드 및 클릭 방지막 추가
       function loadExternalRoster() {
         const contentArea = document.getElementById("content-area");
         const targetUrl = "http://34.22.100.244:8835/";
 
+        // iframe 생성
         contentArea.innerHTML = `
-          <iframe src="${targetUrl}" style="width:100%; height:100%; border:none; display:block;"></iframe>
+          <iframe id="roster-frame" src="${targetUrl}" style="width:100%; height:100%; border:none; display:block;"></iframe>
           <div class="click-shield"></div>
         `;
       }
 
-      // 3. 실행
       window.onload = function () {
         setEaglesDate();
         loadExternalRoster();
