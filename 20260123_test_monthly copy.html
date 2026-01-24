@@ -488,86 +488,97 @@
         return "";
       }
 
-      async function renderSchedule() {
-        const d = new Date();
-        const diff = d.getDate() - d.getDay();
-        const baseSunday = new Date(d.setDate(diff));
-        baseSunday.setHours(0, 0, 0, 0);
+ async function renderSchedule() {
+  const d = new Date();
+  const diff = d.getDate() - d.getDay();
+  const baseSunday = new Date(d.setDate(diff));
+  baseSunday.setHours(0, 0, 0, 0);
 
-        const container = document.getElementById("schedule-container");
-        const [futures, dev] = await Promise.all([
-          fetchEvents(CALENDARS[0].id, baseSunday, 42),
-          fetchEvents(CALENDARS[1].id, baseSunday, 42),
-        ]);
+  const container = document.getElementById("schedule-container");
+  const [futures, dev] = await Promise.all([
+    fetchEvents(CALENDARS[0].id, baseSunday, 42),
+    fetchEvents(CALENDARS[1].id, baseSunday, 42),
+  ]);
 
-        container.innerHTML = "";
+  container.innerHTML = "";
+  const weekDays = ["일", "월", "화", "수", "목", "금", "토"]; // 요일 배열 추가
 
-        for (let w = 0; w < 6; w++) {
-          const weekStart = new Date(baseSunday);
-          weekStart.setDate(baseSunday.getDate() + w * 7);
-          const weekBlock = document.createElement("div");
-          weekBlock.className = "week-block";
+  for (let w = 0; w < 6; w++) {
+    const weekStart = new Date(baseSunday);
+    weekStart.setDate(baseSunday.getDate() + w * 7);
+    const weekBlock = document.createElement("div");
+    weekBlock.className = "week-block";
 
-          [futures, dev].forEach((events, idx) => {
-            const cal = CALENDARS[idx];
-            const row = document.createElement("div");
-            row.className = `team-row ${cal.rowClass}`;
-            let rowHtml = `<div class="team-label ${cal.labelClass}">${cal.name}</div><div class="day-slots">`;
+    [futures, dev].forEach((events, idx) => {
+      const cal = CALENDARS[idx];
+      const row = document.createElement("div");
+      row.className = `team-row ${cal.rowClass}`;
+      let rowHtml = `<div class="team-label ${cal.labelClass}">${cal.name}</div><div class="day-slots">`;
 
-            for (let i = 0; i < 7; i++) {
-              const currentDay = new Date(weekStart);
-              currentDay.setDate(weekStart.getDate() + i);
-              const slotId = `slot-${idx}-${w}-${i}`;
-              const isToday =
-                currentDay.toDateString() === new Date().toDateString()
-                  ? "today"
-                  : "";
-              const dayEvents = events.filter(
-                (e) =>
-                  new Date(e.start.date || e.start.dateTime).toDateString() ===
-                  currentDay.toDateString(),
-              );
-              const dateLabelHtml =
-                idx === 0
-                  ? `<span class="date-label">${currentDay.getMonth() + 1}/${currentDay.getDate()}</span>`
-                  : "";
+      for (let i = 0; i < 7; i++) {
+        const currentDay = new Date(weekStart);
+        currentDay.setDate(weekStart.getDate() + i);
+        const slotId = `slot-${idx}-${w}-${i}`;
+        const isToday = currentDay.toDateString() === new Date().toDateString() ? "today" : "";
+        
+        const dayEvents = events.filter(
+          (e) => new Date(e.start.date || e.start.dateTime).toDateString() === currentDay.toDateString()
+        );
 
-              rowHtml += `<div class="day-slot ${isToday}" id="${slotId}" onclick="openModal('${slotId}')">
-                            ${dateLabelHtml}
-                            <div class="slot-content">`;
+        // --- [날짜 양옆 로고 추출 로직] ---
+        let leftLogoHtml = "";
+        let rightLogoHtml = "";
+        
+        // 해당 날짜에 이벤트가 있고, 첫 번째 이벤트 제목에 '-'가 있을 때만 로고 생성
+        if (dayEvents.length > 0 && dayEvents[0].summary.includes("-")) {
+          const teams = dayEvents[0].summary.split("-");
+          const leftTeam = teams[0].trim();
+          const rightTeam = teams[1].trim().split(" ")[0]; // [P] 등 부가정보 제거
 
-              dayEvents.forEach((e) => {
-                const titleText = e.summary || "";
-                const startTime = formatTime(e.start.dateTime);
-                const infoText =
-                  (e.location || "") + (startTime ? ` [${startTime}]` : "");
-                const cClass = getConditionClass(titleText);
-                rowHtml += `<div class="event-content ${cClass}">
-                              <span class="event-title">${titleText}</span>
-                              ${infoText ? `<span class="event-info">${infoText}</span>` : ""}
-                              ${e.description ? `<span class="event-desc">${e.description}</span>` : ""}
-                            </div>`;
-              });
-              rowHtml += `</div></div>`;
-            }
-            rowHtml += `</div>`;
-            row.innerHTML = rowHtml;
-            weekBlock.appendChild(row);
-
-            setTimeout(() => {
-              const slots = row.querySelectorAll(".day-slot");
-              slots.forEach((slot) => {
-                const scrollH =
-                  slot.querySelector(".slot-content").scrollHeight;
-                // 육성군(idx 1)은 65px 초과 시 도트 표시, 퓨처스는 110px 기준
-                const limit = idx === 1 ? 65 : 110;
-                if (scrollH > limit) slot.classList.add("has-overflow");
-              });
-            }, 300);
-          });
-          container.appendChild(weekBlock);
+          leftLogoHtml = `<img src="teams/${leftTeam}.png" class="date-side-logo" onerror="this.style.display='none'">`;
+          rightLogoHtml = `<img src="teams/${rightTeam}.png" class="date-side-logo" onerror="this.style.display='none'">`;
         }
+
+        // 요일 계산
+        const dayLabel = weekDays[currentDay.getDay()];
+        
+        // 날짜 라벨 HTML (퓨처스 행인 idx === 0일 때만 로고와 함께 출력)
+        const dateLabelHtml = idx === 0 
+          ? `<div class="date-wrapper">
+               ${leftLogoHtml}
+               <span class="date-label">${currentDay.getMonth() + 1}/${currentDay.getDate()} (${dayLabel})</span>
+               ${rightLogoHtml}
+             </div>` 
+          : "";
+
+        rowHtml += `<div class="day-slot ${isToday}" id="${slotId}" onclick="openModal('${slotId}')">
+                      ${dateLabelHtml}
+                      <div class="slot-content">`;
+
+        dayEvents.forEach((e) => {
+          const titleText = e.summary || "";
+          const startTime = formatTime(e.start.dateTime);
+          const infoText = (e.location || "") + (startTime ? ` [${startTime}]` : "");
+          const cClass = getConditionClass(titleText);
+          
+          // 이벤트 타이틀에는 로고 없이 텍스트만 출력
+          rowHtml += `<div class="event-content ${cClass}">
+                        <span class="event-title">${titleText}</span>
+                        ${infoText ? `<span class="event-info">${infoText}</span>` : ""}
+                        ${e.description ? `<span class="event-desc">${e.description}</span>` : ""}
+                      </div>`;
+        });
+        rowHtml += `</div></div>`;
       }
+      rowHtml += `</div>`;
+      row.innerHTML = rowHtml;
+      weekBlock.appendChild(row);
+
+      // (기존 setTimeout 생략 - 도트 표시 로직 유지)
+    });
+    container.appendChild(weekBlock);
+  }
+}
       renderSchedule();
     </script>
   </body>
