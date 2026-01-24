@@ -33,6 +33,6 @@ ca9502e51d0b0bd07eaa8ab7dbbc3925b69576439b0642b072dc79015eed8d11@group.calendar.
 git pull origin main && git add . && git commit -m " 멘트넣기 " && git push origin main
 
 스케줄 CSV파일 제외 명령어
-git pull origin main && git add . && git reset futures.csv development.csv && git commit -m "CSV 제외 업데이트" && git push origin main
+git pull origin main && git add . && git reset futures.csv development.csv && git commit -m "내용 넣기 " && git push origin main
 
   //
