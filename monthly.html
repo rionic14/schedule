@@ -323,7 +323,7 @@
                 cell.innerHTML = `
                   <div class="event-container">
                     <span class="event-title truncate ${getTextColorClass(e.summary)}">${e.summary}</span>
-                    <span class="event-info truncate">${e.location || ""} ${startTime ? `[${startTime}]` : ""}</span>
+                    <span class="event-info truncate">${e.location || ""}${startTime ? `[${startTime}]` : ""}</span>
                     ${dayEvents.length > 1 ? `<span class="has-more">+ 더보기</span>` : ""}
                   </div>`;
                 cell.querySelector('.event-container').onclick = () => openModal(dayEvents);
