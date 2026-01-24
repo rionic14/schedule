@@ -1,0 +1,38 @@
+//
+
+futures -> development                      dd             
+252, 78, 0 을 25252525 로 바꾼다 
+28, 30, 60을 252, 78, 0로 바꾼다 
+25252525를 28, 30, 60로 바꾼다
+
+컬러코드----------------------------------
+
+"-한화" 가 들어가면 그 셀은 주황색 글씨로 rgb(252,78,0)
+"한화-" 가 들어가면 그 셀은 네이비 글씨로 rgb(28,30,60)
+"미정" 이 들어가면 그 셀은  녹색 글씨로 rgb(140, 210, 70)
+"이동" 이 들어가면 그 셀은 파란 글씨로 rgb(0, 190, 210)
+
+
+
+
+
+구글캘린더 ------------------------------
+API
+AIzaSyAluwiwfHMYHBoAZe5EAXAiejet-s_Pwl8
+
+퓨처프 カレンダー ID
+0e62092f3ac04d780ab1cccccb428e2119f2823be6f59112cc0e427d843a0695@group.calendar.google.com
+
+육성군 カレンダー ID
+ca9502e51d0b0bd07eaa8ab7dbbc3925b69576439b0642b072dc79015eed8d11@group.calendar.google.com
+
+
+
+
+동기화 명령어
+git pull origin main && git add . && git commit -m " 멘트넣기 " && git push origin main
+
+스케줄 CSV파일 제외 명령어
+git pull origin main && git add . && git reset futures.csv development.csv && git commit -m "CSV 제외 업데이트" && git push origin main
+
+  //

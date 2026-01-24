@@ -1,418 +1,168 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>K 스케줄 - 한화이글스 에디션</title>
-    <link rel="shortcut icon" href="images/fabicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="images/fabicon.ico" />
-    <link rel="icon" sizes="192x192" href="images/fabicon.ico" />
+<head>
+    <meta charset="UTF-8">
+    <title>K 스케줄 - 주간 교차 타임라인</title>
     <style>
-      /* 1. 폰트 등록 */
-      @font-face {
-        font-family: "Eagles-Bold";
-        src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
-        font-weight: normal;
-      }
-      @font-face {
-        font-family: "Eagles-Gothic";
-        src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
-        font-weight: normal;
-      }
+        @font-face {
+            font-family: "Eagles-Bold";
+            src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
+        }
+        @font-face {
+            font-family: "Eagles-Gothic";
+            src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
+        }
 
-      /* 2. 전체 레이아웃 */
-      body {
-        margin: 0;
-        padding: 8px;
-        background-color: #f5f5f7;
-        font-family: "Eagles-Gothic", sans-serif;
-        -webkit-font-smoothing: antialiased;
-        position: relative; /* 유니폼 배치를 위해 추가 */
-      }
+        body {
+            background-color: #f0f2f5;
+            font-family: "Eagles-Gothic", sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
 
-      .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        position: relative;
-      }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-      /* 3. 우측 상단 유니폼 사진 컨테이너 */
-      .uniform-container {
-        position: absolute;
-        top: 0px;
-        right: 10px;
-        z-index: 100;
-        display: flex; /* 가로 정렬을 위한 설정 */
-        align-items: center; /* 세로 중앙 정렬 */
-        gap: 15px; /* 텍스트와 사진 사이 간격 */
-      }
+        /* 주차별 큰 박스 */
+        .week-block {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
 
-      /* 유니폼 타이틀 스타일 */
-      .uniform-title {
-        font-family: "Eagles-Bold", sans-serif;
-        font-size: 1.8rem;
-        color: rgb(252, 78, 0);
-        border-left: 4px solid rgb(252, 78, 0);
-        /* 3. 위쪽 padding을 0으로 주면 글자가 더 위로 붙습니다 */
-        padding: 0px 0px 0px 10px;
-        background-color: rgba(255, 255, 255, 0.5);
-        white-space: nowrap;
-        line-height: 1; /* 4. 줄간격을 최소화해서 위 공간 삭제 */
-      }
+        .week-title {
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            font-family: "Eagles-Bold";
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+        }
 
-      /* 유니폼 이미지 크기 및 효과 */
-      #uniform-img {
-        width: 130px; /* 원하는 크기로 조절하세요 */
-        height: auto;
-        display: none;
-        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
-      }
+        /* 공통 줄 구조 */
+        .team-row {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            min-height: 80px; /* 일정이 늘어나면 알아서 커짐 */
+        }
 
-      /* 4. 상단 헤더 컨테이너 */
-      .schedule-header-container {
-        margin-bottom: 15px;
-        padding: 5px 15px;
-        border-left: 6px solid rgb(252, 78, 0);
-      }
+        .team-row:last-child {
+            border-bottom: none;
+        }
 
-      .main-title {
-        font-family: "Eagles-Bold", sans-serif;
-        font-size: 2.8rem;
-        color: rgb(252, 78, 0);
-        margin: 0 0 10px 0; /* 아래쪽 여백 추가 */
-      }
+        /* 팀 레이블 (왼쪽 세로바) */
+        .team-label {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Eagles-Bold";
+            color: white;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
 
-      /* 날씨와 버튼을 가로로 정렬하는 컨테이너 */
-      .info-bar {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap; /* 화면 좁아지면 자연스럽게 줄바꿈 */
-      }
+        .futures-label { background-color: #ff6600; } /* 오렌지 */
+        .dev-label { background-color: #1c1e3c; }     /* 네이비 */
 
-      .weather-info {
-        font-size: 1.1rem;
-        color: #444;
-        display: flex;
-        align-items: center;
-      }
+        /* 요일별 칸 */
+        .day-slots {
+            display: flex;
+            flex-grow: 1;
+            width: calc(100% - 100px);
+        }
 
-      /* 5. 갱신 버튼 스타일 (날씨 옆 배지 스타일) */
-      .status-btn {
-        cursor: pointer;
-        border: none;
-        border-radius: 50px;
-        padding: 8px 100px;
-        font-family: "Eagles-Bold", sans-serif;
-        font-size: 1.4rem;
-        transition: all 0.3s ease;
-        background-color: #e0e0e0;
-        color: #666;
-        white-space: nowrap;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
+        .day-slot {
+            flex: 1;
+            border-right: 1px solid #f0f0f0;
+            padding: 8px;
+            min-width: 0;
+        }
 
-      .status-btn.updated {
-        background-color: rgb(252, 78, 0);
-        color: white;
-      }
+        .day-slot:last-child { border-right: none; }
 
-      .tomorrow-badge {
-        background-color: #333;
-        color: white;
-        font-size: 1rem;
-        padding: 5px 10px;
-        border-radius: 50px;
-        border: 1px solid rgb(252, 78, 0);
-      }
+        .day-slot b {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #f9f9f9;
+            padding-bottom: 2px;
+        }
 
-      .weather-info {
-        font-size: 1.1rem;
-        color: #666;
-        margin-top: 5px;
-      }
-      .weather-tag {
-        background-color: #eee;
-        padding: 3px 10px;
-        border-radius: 4px;
-        margin-right: 5px;
-      }
+        /* 실제 일정 태그 */
+        .event-tag {
+            font-size: 0.85rem;
+            padding: 4px 6px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-weight: bold;
+            line-height: 1.3;
+            word-break: break-all; /* 긴 문장 자동 줄바꿈 */
+        }
 
-      /* 4. 표 스타일 - 화면 높이에 맞게 가변 설정 */
-      #display {
-        height: 90%; /* 화면 높이의 약 70%를 표가 차지하도록 설정 */
-        display: flex;
-      }
+        .futures-tag {
+            background: #fff0e6;
+            color: #ff6600;
+            border-left: 3px solid #ff6600;
+        }
 
-      table {
-        width: 100%;
-        height: 100%; /* 부모(#display) 높이를 가득 채움 */
-        border-collapse: collapse;
-        table-layout: fixed;
-        background: white;
-      }
+        .dev-tag {
+            background: #eef0f5;
+            color: #1c1e3c;
+            border-left: 3px solid #1c1e3c;
+        }
 
-      td {
-        border: 1px solid #444;
-        padding: 1px;
-        text-align: center;
-        font-size: 1.2rem;
-        /* 핵심: 행이 적으면 높이를 늘리고, 많으면 줄어들게 함 */
-        height: auto;
-      }
-
-      /* 제목 행(투수/야수)은 너무 늘어나지 않게 적당한 높이 유지 */
-      .main-header {
-        height: 37px;
-        font-family: "Eagles-Bold", sans-serif;
-        background-color: rgb(252, 78, 0);
-        color: rgb(28, 30, 60);
-        font-size: 2.1rem;
-      }
-
-      .col-time {
-        background-color: rgb(235, 235, 235);
-        font-weight: bold;
-      }
-      .col-content {
-        text-align: left;
-        padding-left: 20px;
-      }
-      .center-line {
-        border-right: 3px solid #333 !important;
-      }
-      .player-list-cell {
-        background-color: rgb(240, 240, 240);
-        letter-spacing: 2px;
-      }
-
-      /* 하단 버튼 컨테이너 */
-      .bottom-link-container {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
-
-      .nav-btn {
-        text-decoration: none;
-        color: #ffffff;
-        padding: 7px 0;
-        width: 400px; /* 버튼 너비를 균일하게 설정 */
-        text-align: center;
-        border-radius: 10px;
-        font-size: 2.3rem;
-        font-family: "Eagles-Bold", sans-serif;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-      }
-
-      .btn-futures {
-        background-color: rgb(252, 78, 0);
-      } /* 오렌지 */
-      .btn-development {
-        background-color: rgb(28, 30, 60);
-      } /*네이비 */
-      .btn-monthly {
-        background-color: rgb(237, 219, 180);
-        color: rgb(252, 78, 0);
-      } /* 아이보리 */
-
-      .nav-btn:hover {
-        transform: translateY(-3px);
-        filter: brightness(1.1);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
-      }
-
-      /* 버튼 스타일 (rionic14님의 설정 반영) */
-      .development-btn {
-        text-decoration: none;
-        color: #ffffff;
-        background-color: rgb(28, 30, 60); /* 딥 네이비 */
-        padding: 4px 200px;
-        border-radius: 10px; /* 더 둥글게 */
-        font-size: 1.3rem;
-        font-family: "Eagles-Bold", sans-serif;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      }
-
-      .development-btn:hover {
-        background-color: rgb(252, 78, 0); /* 한화 오렌지 */
-        transform: translateY(-3px); /* 살짝 떠오르는 효과 */
-        box-shadow: 0 6px 20px rgba(252, 78, 0, 0.3);
-      }
+        /* 오늘 날짜 강조 */
+        .is-today {
+            background-color: #fffbef;
+        }
     </style>
-  </head>
+</head>
+<body>
 
-  <body>
-    <div class="container">
-      <div class="uniform-container">
-        <div class="uniform-title">착용 유니폼</div>
-        <img id="uniform-img" src="" alt="Today Uniform" />
-      </div>
-
-      <div class="schedule-header-container">
-        <a href="index.html" style="text-decoration: none">
-          <h1 id="date-text" class="main-title">SCHEDULE</h1>
-        </a>
-        <div class="info-bar">
-          <div id="weather-display" class="weather-info">
-            서산 날씨 확인 중...
-          </div>
-          <button
-            id="update-btn"
-            class="status-btn"
-            onclick="updateStatusLabel()"
-          >
-            스케줄 갱신 전
-          </button>
+<div class="container">
+    <div class="week-block">
+        <div class="week-title">
+            <span>JANUARY - WEEK 1</span>
+            <span style="font-size: 0.8rem; opacity: 0.7;">2026.01.01 - 2026.01.07</span>
         </div>
-      </div>
 
-      <div id="display"></div>
-    </div>
-    <div class="bottom-link-container">
-      <a href="development.html" class="nav-btn btn-development">
-        육성군 스케줄 보기
-      </a>
-      <a href="monthly.html" class="nav-btn btn-monthly"> 월간 스케줄 보기 </a>
-    </div>
-
-    <script>
-      /**
-       * 1. 상태 갱신 (파일 수정 시간 기준)
-       */
-      async function updateStatusLabel() {
-        const btn = document.getElementById("update-btn");
-        if (!btn) return;
-        try {
-          const response = await fetch(
-            "futures.csv?t=" + new Date().getTime(),
-            { method: "HEAD" },
-          );
-          if (!response.ok) return;
-          const lastModified = new Date(response.headers.get("Last-Modified"));
-          const diffInHours = (new Date() - lastModified) / (1000 * 60 * 60);
-
-          if (diffInHours >= 0 && diffInHours <= 12) {
-            btn.classList.add("updated");
-            btn.innerText = "스케줄 갱신 완료 ✓";
-          } else {
-            btn.classList.remove("updated");
-            btn.innerText = "스케줄 갱신 전";
-          }
-        } catch (e) {
-          console.error("상태 로딩 실패:", e);
-        }
-      }
-
-      /**
-       * 2. 날씨 정보 (동네 바꿀수 있음)
-       */
-      async function updateWeatherOnly() {
-        const API_KEY = "cbdcecd908e8704e65f974ca31c52b4e";
-        const cityId = "Kochi,jp"; //여기에 동네 코드 쓰고나서 좀 밑으로 내려가서
-        const weatherDisplay = document.getElementById("weather-display");
-        try {
-          const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?q=${cityId}&appid=${API_KEY}&units=metric`,
-          );
-          const data = await res.json();
-          const todayForecasts = data.list.slice(0, 8);
-          const maxTemp = Math.round(
-            Math.max(...todayForecasts.map((item) => item.main.temp_max)),
-          );
-          const icon = data.list[0].weather[0].icon;
-
-          weatherDisplay.innerHTML = `
-          <div class="weather-item" style="display: inline-flex; align-items: center;">
-            <span style="font-weight: bold; margin-right: 5px;">고치 낮기온 예상</span>
-            <span style="color: #ff6600; font-size: 1.1rem; margin-right: 5px;">${maxTemp}°</span>
-            <div style="display: inline-flex; align-items: center; justify-content: center; background-color: rgb(156, 218, 255); width: 40px; height: 40px; border-radius: 50%;">
-              <img src="https://openweathermap.org/img/wn/${icon}.png" style="width: 40px; height: 40px;">
+        <div class="team-row">
+            <div class="team-label futures-label">FUTURES</div>
+            <div class="day-slots">
+                <div class="day-slot"><b>1(목)</b><div class="event-tag futures-tag">신년휴식</div></div>
+                <div class="day-slot"><b>2(금)</b><div class="event-tag futures-tag">서산 자율훈련</div></div>
+                <div class="day-slot"><b>3(토)</b><div class="event-tag futures-tag">웨이트/기술</div></div>
+                <div class="day-slot"><b>4(일)</b><div class="event-tag futures-tag">정기휴식</div></div>
+                <div class="day-slot"><b>5(월)</b><div class="event-tag futures-tag">서산 훈련 시작</div></div>
+                <div class="day-slot"><b>6(화)</b><div class="event-tag futures-tag">야간 배팅 훈련</div></div>
+                <div class="day-slot"><b>7(수)</b><div class="event-tag futures-tag">전술 미팅</div></div>
             </div>
-          </div>`;
-        } catch (error) {
-          console.error("날씨 실패:", error);
-        }
-      }
+        </div>
 
-      /**
-       * 3. 유니폼 이미지 로드
-       */
-      async function loadUniformImage(targetDate) {
-        const imgElement = document.getElementById("uniform-img");
-        if (!imgElement) return;
-        try {
-          const res = await fetch(
-            "uniforms/uniform.csv?t=" + new Date().getTime(),
-          );
-          const data = await res.text();
-          const match = data
-            .trim()
-            .split("\n")
-            .find((row) => row.startsWith(targetDate));
-          if (match) {
-            imgElement.src = `uniforms/${match.split(",")[1].trim()}`;
-            imgElement.style.display = "inline-block";
-          }
-        } catch (e) {
-          console.error("유니폼 로드 실패");
-        }
-      }
+        <div class="team-row">
+            <div class="team-label dev-label">DEVELOP</div>
+            <div class="day-slots">
+                <div class="day-slot"><b>1(목)</b><div class="event-tag dev-tag">개별과제</div></div>
+                <div class="day-slot"><b>2(금)</b><div class="event-tag dev-tag">신인 교육</div></div>
+                <div class="day-slot"><b>3(토)</b><div class="event-tag dev-tag">기초 체력 측정</div></div>
+                <div class="day-slot"><b>4(일)</b><div class="event-tag dev-tag">휴식</div></div>
+                <div class="day-slot"><b>5(월)</b><div class="event-tag dev-tag">수비 포지션 훈련</div></div>
+                <div class="day-slot"><b>6(화)</b><div class="event-tag dev-tag">송구 정확도 측정</div></div>
+                <div class="day-slot"><b>7(수)</b><div class="event-tag dev-tag">개별 면담</div></div>
+            </div>
+        </div>
+    </div>
 
-      /**
-       * 4. 메인 실행
-       */
-      async function run() {
-        const now = new Date();
-        if (now.getHours() >= 18) now.setDate(now.getDate() + 1);
-        const dateStr = now.toISOString().split("T")[0];
+    </div>
 
-        document.getElementById("date-text").innerText =
-          `${dateStr} FUTURES SCHEDULE`;
-
-        updateWeatherOnly();
-        loadUniformImage(dateStr);
-        updateStatusLabel();
-
-        try {
-          const res = await fetch("futures.csv?t=" + new Date().getTime());
-          const csvData = await res.text();
-          const rows = csvData.trim().split("\n");
-          let html = `<table><colgroup><col style="width: 8%;"><col style="width: 42%;"><col style="width: 8%;"><col style="width: 42%;"></colgroup>`;
-
-          rows.forEach((row, index) => {
-            const cols = row.split(",");
-            html += "<tr>";
-            if (index === 0) {
-              html += `<td colspan="2" class="main-header center-line">${cols[0] || "투수"}</td>`;
-              html += `<td colspan="2" class="main-header">${cols[2] || "야수"}</td>`;
-            } else if (index === rows.length - 1) {
-              html += `<td class="col-time">${cols[0] || "기타"}</td><td colspan="3" class="col-content">${cols[1] || ""}</td>`;
-            } else {
-              cols.forEach((col, colIndex) => {
-                const isPlayer = col.includes("선수명단");
-                const cellClass = isPlayer
-                  ? "player-list-cell"
-                  : colIndex % 2 === 0
-                    ? "col-time"
-                    : "col-content";
-                html += `<td class="${cellClass} ${colIndex === 1 ? "center-line" : ""}">${col || ""}</td>`;
-              });
-            }
-            html += "</tr>";
-          });
-          document.getElementById("display").innerHTML = html + "</table>";
-        } catch (e) {
-          document.getElementById("display").innerHTML = "<p>CSV 로드 실패</p>";
-        }
-      }
-
-      run();
-    </script>
-  </body>
+</body>
 </html>
