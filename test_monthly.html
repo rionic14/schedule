@@ -73,7 +73,7 @@
         flex: 1;
         padding: 12px 0;
         border-right: 1px solid rgb(217, 217, 217);
-        font-size: 2.6rem;
+        font-size: 1.3rem;
       }
 
       .container {
@@ -118,7 +118,7 @@
       /* 육성군 행 높이 축소 */
       .dev-row {
         background-color: rgb(230, 230, 255);
-        min-height: 70px !important;
+        min-height: 60px !important;
       }
       .dev-label {
         background-color: rgb(28, 30, 60);
@@ -138,7 +138,7 @@
         padding: 12px 10px;
         min-width: 0;
         position: relative;
-        height: 90px;
+        height: 82px;
         overflow: hidden;
         cursor: pointer;
         transition: background 0.2s;
@@ -160,7 +160,7 @@
       }
 
       .date-label {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         color: #474747;
         font-weight: bold;
         margin-bottom: 8px;
@@ -463,6 +463,9 @@
         return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
       }
 
+
+
+      
       async function fetchEvents(calId, start, days) {
         const end = new Date(start);
         end.setDate(start.getDate() + days);
