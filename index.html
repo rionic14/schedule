@@ -146,40 +146,34 @@
     </script>
   
 <div class="bottom-quote">
-   <span class="big-text">본 포털에 업로드 된 <br>모든 문서가</span>
-  <span class="kimatta-orion-no-tsuma">대외비</span>
-  <span class="big-text">입니다. <br>관리에 각별히 <br>주의해 주시기 바랍니다.</span>
-</div>
+   <span class="big-text">본 포털에 업로드 된 모든 문서가</span>
+   <span class="secret">대외비</span>
+   <span class="big-text">입니다.<br>취급에 각별히 주의하시기 바랍니다.</span>
+  </div>
 
 
 <style>
-  .bottom-quote { /*전체적인 글이 놓이는 위치*/
-    text-align: center;
-    margin: 20px 0;
-    font-family: "JP", sans-serif;
-    font-size: 1.5rem; /* 기본 크기 */
-    color: #555;
-  }
-
-  .in-tomiokakei-no-kokoro {
-    font-size: .01rem;   /* 특정 부분만 크게 */
-    font-family: "JP", sans-serif; /* 서체 변경도 가능 */
-    color: rgb(10, 80, 140); /* 색상 강조 */
-    vertical-align: middle;
-  }
-
- .kimatta-orion-no-tsuma {
-    font-size: 2.5rem;
-    font-family: "Eagles-Gothic", sans-serif; /* 오타 수정 */
-    color: rgb(100, 40, 230);
-    vertical-align: middle;
+  .bottom-quote {
+    text-align: left;
+    margin: 20px 0; /* 위쪽 여백을 좀 더 줘서 버튼들과 분리 */
+    line-height: 1.6;
   }
 
   .big-text {
-    font-size: 1.5rem;
     font-family: "Eagles-Gothic", sans-serif;
-    color: rgb(17,37,0);
+    font-size: 1.5rem;
+    color: #333; /* 가독성 좋은 짙은 회색 */
     vertical-align: middle;
+  }
+
+  .secret {
+    font-family: "Eagles-Gothic", sans-serif;
+    font-size: 2rem; /* 대외비 글자 강조 */
+    font-weight: bold;
+    color: rgb(255, 42, 0); /* 보라색 강조 유지 */
+    vertical-align: middle;
+    display: inline-block;
+    margin: 5px 0;
   }
 </style>
 
