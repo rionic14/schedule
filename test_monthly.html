@@ -1,208 +1,371 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>K 스케줄 - 날짜별 더보기</title>
     <style>
-        @font-face { font-family: "Eagles-Bold"; src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype"); }
-        @font-face { font-family: "Eagles-Gothic"; src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype"); }
-@font-face { font-family: "NotoSansJP-Bold"; src: url("Fonts/NotoSansJP-Bold.ttf") format("truetype"); }
+      @font-face {
+        font-family: "Eagles-Bold";
+        src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Eagles-Gothic";
+        src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
+      }
+      @font-face {
+        font-family: "NotoSansJP-Bold";
+        src: url("Fonts/NotoSansJP-Bold.ttf") format("truetype");
+      }
 
-        body { background-color: #f8f9fa; font-family: "Eagles-Gothic", sans-serif; padding: 0; margin: 0; }
-        
-        /* 헤더 전체 고정 */
-        .sticky-header { 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            background: rgb(217, 217, 217); 
-            box-shadow: 0 4px 15px rgb(217,217,217,); 
-        }
+      body {
+        background-color: #f8f9fa;
+        font-family: "Eagles-Gothic", sans-serif;
+        padding: 0;
+        margin: 0;
+      }
 
-        /* 상단 내비게이션 버튼 (요일 위에 배치) */
-        .top-nav-bar {
-            display: flex;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 10px 10px 5px 10px;
-            gap: 10px;
-        }
-        .top-nav-btn {
-            flex: 1;
-            text-decoration: none;
-            padding: 10px 0;
-            border-radius: 6px;
-            text-align: center;
-            font-family: "Eagles-Bold";
-            font-size: 3rem;
-            color: white;
-            transition: all 0.2s;
-        }
-        .btn-futures { background-color: rgb(252, 78, 0); }
-        .btn-dev { background-color: rgb(28, 30, 60); }
-        .top-nav-btn:hover { filter: brightness(1.2); transform: scale(1.01); }
+      /* 헤더 전체 고정 */
+      .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgb(217, 217, 217);
+        box-shadow: 0 4px 15px rgb(217, 217, 217);
+      }
 
-        /* 요일 헤더 */
-        .days-header { 
-            display: flex; 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            color: rgb(0, 0, 0); 
-            padding-left: 35px; 
-            font-family: "NotoSansJP-Bold"; 
-            text-align: center; 
-        }
-        .header-slot { flex: 1; padding: 12px 0; border-right: 1px solid #444; font-size: 1.2rem; }
-        
-        /* 컨텐츠 영역 */
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 10px; }
-        .week-block { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px; overflow: hidden; border: 1px solid #ddd; }
-        
-        /* 행 및 슬롯 디자인 */
-        .team-row { display: flex; border-bottom: 1px solid #eee; min-height: 150px; position: relative; }
-        .team-label { width: 35px; display: flex; align-items: center; justify-content: center; font-family: "Eagles-Bold"; color: white; flex-shrink: 0; font-size: 0.85rem; }
-        .futures-row { background-color: rgb(254, 231, 228); }
-        .futures-label { background-color: rgb(252, 78, 0); }
-        .dev-row { background-color: rgb(230, 230, 255); }
-        .dev-label { background-color: rgb(28, 30, 60); }
+      /* 상단 내비게이션 버튼 (요일 위에 배치) */
+      .top-nav-bar {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 10px 10px 5px 10px;
+        gap: 10px;
+      }
+      .top-nav-btn {
+        flex: 1;
+        text-decoration: none;
+        padding: 10px 0;
+        border-radius: 6px;
+        text-align: center;
+        font-family: "Eagles-Bold";
+        font-size: 3rem;
+        color: white;
+        transition: all 0.2s;
+      }
+      .btn-futures {
+        background-color: rgb(252, 78, 0);
+      }
+      .btn-dev {
+        background-color: rgb(28, 30, 60);
+      }
+      .top-nav-btn:hover {
+        filter: brightness(1.2);
+        transform: scale(1.01);
+      }
 
-        .day-slots { display: flex; flex-grow: 1; width: calc(100% - 80px); align-items: stretch; }
-        .day-slot { 
-            flex: 1; border-right: 1px solid rgba(0,0,0,0.05); padding: 12px 10px; 
-            min-width: 0; position: relative; height: 150px; overflow: hidden; transition: height 0.3s ease;
-        }
-        .day-slot.expanded { height: auto; min-height: 150px; z-index: 10; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-        .day-slot.today { background-color: rgba(255, 255, 255, 0.7); outline: 2px solid #ff6600; outline-offset: -2px; }
+      /* 요일 헤더 */
+      .days-header {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: rgb(0, 0, 0);
+        padding-left: 35px;
+        font-family: "NotoSansJP-Bold";
+        text-align: center;
+      }
+      .header-slot {
+        flex: 1;
+        padding: 12px 0;
+        border-right: 1px solid rgb(217,217,217);
+        font-size: 1.2rem;
+      }
 
-        .date-label { font-size: 0.75rem; color: #999; font-weight: bold; margin-bottom: 8px; display: block; }
-        .event-content { font-size: 0.82rem; line-height: 1.25; white-space: pre-wrap; margin-bottom: 12px; }
-        .event-title { font-weight: 800; font-size: 0.92rem; display: block; margin-bottom: 2px; }
-        .event-info { display: block; margin-bottom: 2px; font-weight: 600; opacity: 0.9; }
-        .event-desc { font-size: 0.78rem; opacity: 0.75; display: block; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 3px; }
+      /* 컨텐츠 영역 */
+      .container {
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 0 10px;
+      }
+      .week-block {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+      }
 
-        .text-orange { color: rgb(252, 78, 0) !important; }
-        .text-navy { color: rgb(28, 30, 60) !important; }
-        .text-green { color: rgb(140, 210, 70) !important; }
-        .text-blue { color: rgb(0, 190, 210) !important; }
-        .text-red { color: rgb(255, 0, 0) !important; }
+      /* 행 및 슬롯 디자인 */
+      .team-row {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        min-height: 150px;
+        position: relative;
+      }
+      .team-label {
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Eagles-Bold";
+        color: white;
+        flex-shrink: 0;
+        font-size: 1.9rem;
+      }
+      .futures-row {
+        background-color: rgb(254, 231, 228);
+      }
+      .futures-label {
+        background-color: rgb(252, 78, 0);
+      }
+      .dev-row {
+        background-color: rgb(230, 230, 255);
+      }
+      .dev-label {
+        background-color: rgb(28, 30, 60);
+      }
 
-        .day-more-btn {
-            position: absolute; bottom: 3px; right: 3px; font-size: 0.65rem; font-weight: bold; color: white;
-            background: rgba(0,0,0,0.4); width: 18px; height: 18px; display: none; align-items: center; justify-content: center;
-            border-radius: 3px; cursor: pointer; z-index: 5;
-        }
-        .day-slot.has-overflow .day-more-btn { display: flex; }
-        .day-slot.expanded .day-more-btn { background: #ff6600; transform: rotate(45deg); }
+      .day-slots {
+        display: flex;
+        flex-grow: 1;
+        width: calc(100% - 80px);
+        align-items: stretch;
+      }
+      .day-slot {
+        flex: 1;
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 12px 10px;
+        min-width: 0;
+        position: relative;
+        height: 150px;
+        overflow: hidden;
+        transition: height 0.3s ease;
+      }
+      .day-slot.expanded {
+        height: auto;
+        min-height: 150px;
+        z-index: 10;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      }
+      .day-slot.today {
+        background-color: rgba(255, 255, 255, 0.7);
+        outline: 2px solid #ff6600;
+        outline-offset: -2px;
+      }
+
+      .date-label {
+        font-size: 0.75rem;
+        color: #999;
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+      }
+      .event-content {
+        font-size: 0.82rem;
+        line-height: 1.25;
+        white-space: pre-wrap;
+        margin-bottom: 12px;
+      }
+      .event-title {
+        font-weight: 800;
+        font-size: 0.92rem;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .event-info {
+        display: block;
+        margin-bottom: 2px;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .event-desc {
+        font-size: 0.78rem;
+        opacity: 0.75;
+        display: block;
+        border-top: 1px dashed rgba(0, 0, 0, 0.1);
+        padding-top: 3px;
+      }
+
+      .text-orange {
+        color: rgb(252, 78, 0) !important;
+      }
+      .text-navy {
+        color: rgb(28, 30, 60) !important;
+      }
+      .text-green {
+        color: rgb(140, 210, 70) !important;
+      }
+      .text-blue {
+        color: rgb(0, 190, 210) !important;
+      }
+      .text-red {
+        color: rgb(255, 0, 0) !important;
+      }
+
+      .day-more-btn {
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: white;
+        background: rgba(0, 0, 0, 0.4);
+        width: 18px;
+        height: 18px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        cursor: pointer;
+        z-index: 5;
+      }
+      .day-slot.has-overflow .day-more-btn {
+        display: flex;
+      }
+      .day-slot.expanded .day-more-btn {
+        background: #ff6600;
+        transform: rotate(45deg);
+      }
     </style>
-</head>
-<body>
-
-<div class="sticky-header">
-    <div class="top-nav-bar">
+  </head>
+  <body>
+    <div class="sticky-header">
+      <div class="top-nav-bar">
         <a href="futures.html" class="top-nav-btn btn-futures">퓨처스 스케줄</a>
         <a href="development.html" class="top-nav-btn btn-dev">육성군 스케줄</a>
-    </div>
-    <div class="days-header">
-        <div class="header-slot" style="color:#ff0019">日</div>
+      </div>
+      <div class="days-header">
+        <div class="header-slot" style="color: #ff0019">日</div>
         <div class="header-slot">月</div>
         <div class="header-slot">火</div>
         <div class="header-slot">水</div>
         <div class="header-slot">木</div>
         <div class="header-slot">金</div>
-        <div class="header-slot" style="color:#2010ff">土</div>
+        <div class="header-slot" style="color: #2010ff">土</div>
+      </div>
     </div>
-</div>
 
-<div class="container" id="schedule-container">
-    <div id="loading" style="text-align:center; padding:50px; font-family:'Eagles-Bold'; color:#ff6600;">데이터 작두 타는 중...</div>
-</div>
+    <div class="container" id="schedule-container">
+      <div
+        id="loading"
+        style="
+          text-align: center;
+          padding: 50px;
+          font-family: &quot;Eagles-Bold&quot;;
+          color: #ff6600;
+        "
+      >
+        데이터 작두 타는 중...
+      </div>
+    </div>
 
-<script>
-// (기존 Google Calendar 연동 스크립트 그대로 유지)
-const API_KEY = "AIzaSyAluwiwfHMYHBoAZe5EAXAiejet-s_Pwl8";
-const CALENDARS = [
-    { id: "0e62092f3ac04d780ab1cccccb428e2119f2823be6f59112cc0e427d843a0695@group.calendar.google.com", name: "FTS", rowClass: "futures-row", labelClass: "futures-label" },
-    { id: "ca9502e51d0b0bd07eaa8ab7dbbc3925b69576439b0642b072dc79015eed8d11@group.calendar.google.com", name: "DEV", rowClass: "dev-row", labelClass: "dev-label" }
-];
+    <script>
+      // (기존 Google Calendar 연동 스크립트 그대로 유지)
+      const API_KEY = "AIzaSyAluwiwfHMYHBoAZe5EAXAiejet-s_Pwl8";
+      const CALENDARS = [
+        {
+          id: "0e62092f3ac04d780ab1cccccb428e2119f2823be6f59112cc0e427d843a0695@group.calendar.google.com",
+          name: "F",
+          rowClass: "futures-row",
+          labelClass: "futures-label",
+        },
+        {
+          id: "ca9502e51d0b0bd07eaa8ab7dbbc3925b69576439b0642b072dc79015eed8d11@group.calendar.google.com",
+          name: "D",
+          rowClass: "dev-row",
+          labelClass: "dev-label",
+        },
+      ];
 
-function getStartingSunday() {
-    const d = new Date();
-    const day = d.getDay();
-    const diff = d.getDate() - day; 
-    const sunday = new Date(d.setDate(diff));
-    sunday.setHours(0,0,0,0);
-    return sunday;
-}
+      function getStartingSunday() {
+        const d = new Date();
+        const day = d.getDay();
+        const diff = d.getDate() - day;
+        const sunday = new Date(d.setDate(diff));
+        sunday.setHours(0, 0, 0, 0);
+        return sunday;
+      }
 
-function formatTime(dateTimeStr) {
-    if (!dateTimeStr) return "";
-    const date = new Date(dateTimeStr);
-    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-}
+      function formatTime(dateTimeStr) {
+        if (!dateTimeStr) return "";
+        const date = new Date(dateTimeStr);
+        return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+      }
 
-async function fetchEvents(calId, start, days) {
-    const end = new Date(start);
-    end.setDate(start.getDate() + days);
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?key=${API_KEY}&timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&singleEvents=true&orderBy=startTime`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.items || [];
-    } catch(e) { return []; }
-}
+      async function fetchEvents(calId, start, days) {
+        const end = new Date(start);
+        end.setDate(start.getDate() + days);
+        const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?key=${API_KEY}&timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&singleEvents=true&orderBy=startTime`;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          return data.items || [];
+        } catch (e) {
+          return [];
+        }
+      }
 
-function getConditionClass(text) {
-    if (text.includes("휴")) return "text-red";
-    if (text.includes("-한화")) return "text-orange";
-    if (text.includes("한화-")) return "text-navy";
-    if (text.includes("미정")) return "text-green";
-    if (text.includes("이동")) return "text-blue";
-    return "";
-}
+      function getConditionClass(text) {
+        if (text.includes("휴")) return "text-red";
+        if (text.includes("-한화")) return "text-orange";
+        if (text.includes("한화-")) return "text-navy";
+        if (text.includes("미정")) return "text-green";
+        if (text.includes("이동")) return "text-blue";
+        return "";
+      }
 
-async function renderSchedule() {
-    const baseSunday = getStartingSunday();
-    const container = document.getElementById('schedule-container');
-    container.innerHTML = ""; 
+      async function renderSchedule() {
+        const baseSunday = getStartingSunday();
+        const container = document.getElementById("schedule-container");
+        container.innerHTML = "";
 
-    const allFuturesEvents = await fetchEvents(CALENDARS[0].id, baseSunday, 42);
-    const allDevEvents = await fetchEvents(CALENDARS[1].id, baseSunday, 42);
+        const allFuturesEvents = await fetchEvents(
+          CALENDARS[0].id,
+          baseSunday,
+          42,
+        );
+        const allDevEvents = await fetchEvents(CALENDARS[1].id, baseSunday, 42);
 
-    for (let w = 0; w < 6; w++) {
-        const weekStart = new Date(baseSunday);
-        weekStart.setDate(baseSunday.getDate() + (w * 7));
-        const weekBlock = document.createElement('div');
-        weekBlock.className = 'week-block';
-        
-        [allFuturesEvents, allDevEvents].forEach((events, idx) => {
+        for (let w = 0; w < 6; w++) {
+          const weekStart = new Date(baseSunday);
+          weekStart.setDate(baseSunday.getDate() + w * 7);
+          const weekBlock = document.createElement("div");
+          weekBlock.className = "week-block";
+
+          [allFuturesEvents, allDevEvents].forEach((events, idx) => {
             const cal = CALENDARS[idx];
-            const row = document.createElement('div');
+            const row = document.createElement("div");
             row.className = `team-row ${cal.rowClass}`;
-            
+
             let rowHtml = `<div class="team-label ${cal.labelClass}">${cal.name}</div><div class="day-slots">`;
-            
+
             for (let i = 0; i < 7; i++) {
-                const currentDay = new Date(weekStart);
-                currentDay.setDate(weekStart.getDate() + i);
-                const isToday = currentDay.toDateString() === new Date().toDateString() ? "today" : "";
-                const dayEvents = events.filter(e => {
-                    const eDate = new Date(e.start.date || e.start.dateTime);
-                    return eDate.toDateString() === currentDay.toDateString();
-                });
+              const currentDay = new Date(weekStart);
+              currentDay.setDate(weekStart.getDate() + i);
+              const isToday =
+                currentDay.toDateString() === new Date().toDateString()
+                  ? "today"
+                  : "";
+              const dayEvents = events.filter((e) => {
+                const eDate = new Date(e.start.date || e.start.dateTime);
+                return eDate.toDateString() === currentDay.toDateString();
+              });
 
-                rowHtml += `
+              rowHtml += `
                     <div class="day-slot ${isToday}" id="slot-${idx}-${w}-${i}">
-                        <span class="date-label">${currentDay.getMonth()+1}/${currentDay.getDate()}</span>
+                        <span class="date-label">${currentDay.getMonth() + 1}/${currentDay.getDate()}</span>
                         <div class="slot-content">`;
-                
-                dayEvents.forEach(e => {
-                    const startTime = formatTime(e.start.dateTime);
-                    const infoText = (e.location || "") + (startTime ? `[${startTime}]` : "");
-                    const cClass = getConditionClass(e.summary || "");
-                    rowHtml += `<div class="event-content ${cClass}"><span class="event-title">${e.summary || ""}</span>${infoText ? `<span class="event-info">${infoText}</span>` : ''}${e.description ? `<span class="event-desc">${e.description}</span>` : ''}</div>`;
-                });
 
-                rowHtml += `
+              dayEvents.forEach((e) => {
+                const startTime = formatTime(e.start.dateTime);
+                const infoText =
+                  (e.location || "") + (startTime ? `[${startTime}]` : "");
+                const cClass = getConditionClass(e.summary || "");
+                rowHtml += `<div class="event-content ${cClass}"><span class="event-title">${e.summary || ""}</span>${infoText ? `<span class="event-info">${infoText}</span>` : ""}${e.description ? `<span class="event-desc">${e.description}</span>` : ""}</div>`;
+              });
+
+              rowHtml += `
                         </div>
                         <div class="day-more-btn" onclick="this.parentElement.classList.toggle('expanded')">+</div>
                     </div>`;
@@ -212,19 +375,19 @@ async function renderSchedule() {
             weekBlock.appendChild(row);
 
             setTimeout(() => {
-                const slots = row.querySelectorAll('.day-slot');
-                slots.forEach(slot => {
-                    const content = slot.querySelector('.slot-content');
-                    if (content.scrollHeight > 140) {
-                        slot.classList.add('has-overflow');
-                    }
-                });
+              const slots = row.querySelectorAll(".day-slot");
+              slots.forEach((slot) => {
+                const content = slot.querySelector(".slot-content");
+                if (content.scrollHeight > 140) {
+                  slot.classList.add("has-overflow");
+                }
+              });
             }, 100);
-        });
-        container.appendChild(weekBlock);
-    }
-}
-renderSchedule();
-</script>
-</body>
+          });
+          container.appendChild(weekBlock);
+        }
+      }
+      renderSchedule();
+    </script>
+  </body>
 </html>
