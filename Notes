@@ -6,6 +6,6 @@ futures -> development                      dd
 25252525를 28, 30, 60로 바꾼다
 
 
-git pull origin main && git add . && git commit -m "제목변경" && git push origin main
+git pull origin main && git add . && git commit -m "기타 사항 -> 기타사항" && git push origin main
 
   //
