@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>월간 스케줄 - K Edition</title>
+    <link rel="shortcut icon" href="images/fabicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/fabicon.ico" />
+    <link rel="icon" sizes="192x192" href="images/fabicon.ico" />
+    <style>
+      /* 1. 폰트 등록 */
+      @font-face {
+        font-family: "Eagles-Bold";
+        src: url("Fonts/HanwhaEagles-Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Eagles-Gothic";
+        src: url("Fonts/06HANWHAGOTHICL.TTF") format("truetype");
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        font-family: "Eagles-Gothic", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      h1 {
+        font-family: "Eagles-Bold", sans-serif;
+        color: #ff6600;
+        margin: 25px 0 15px 0;
+        font-size: 3rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 헤더 전체를 감싸는 링크 (밑줄 방지) */
+      .header-link {
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 25px;
+        margin-bottom: 15px;
+      }
+
+      /* 로고와 타이틀을 가로로 정렬 */
+      .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px; /* 로고와 글자 사이 간격 */
+      }
+
+      .emblem {
+        height: 60px; /* 글자 크기에 맞춰 로고 높이 조절 */
+        width: auto;
+      }
+
+      #main-title {
+        font-family: "Eagles-Bold", sans-serif;
+        color: #ff6600;
+        margin: 0; /* 링크 컨테이너가 간격을 조절하므로 0으로 설정 */
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 마우스 올렸을 때 전체적으로 밝아지는 효과 */
+      .header-link:hover .header-container {
+        filter: brightness(1.1);
+        transform: scale(1.02);
+        transition: all 0.2s ease;
+      }
+
+      /* 모바일용 크기 조절 */
+      @media (max-width: 768px) {
+        .emblem {
+          height: 40px;
+        }
+        #main-title {
+          font-size: 1.7rem;
+        }
+      }
+
+      /* 캘린더 컨테이너 (포장지) */
+      .calendar-container {
+        width: 95%;
+        max-width: 1000px;
+        background: white;
+        border-top: 5px solid #ff6600; /* 상단 오렌지 포인트 */
+        border-bottom: 5px solid #1c1e3c; /* 하단 네이비 포인트 */
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .title-link {
+        text-decoration: none; /* 밑줄 제거 */
+        color: inherit; /* <h1>에서 설정한 오렌지색 그대로 상속 */
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .title-link:hover {
+        filter: brightness(1.2); /* 마우스 올렸을 때 살짝 밝아지는 효과 */
+      }
+
+      iframe {
+        width: 100%;
+        height: 700px; /* 데스크톱 기본 높이 */
+        border: none;
+        display: block;
+      }
+
+      /* 하단 버튼 컨테이너 */
+      .bottom-link-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        margin-bottom: 40px;
+      }
+
+      .nav-btn {
+        display: block;
+        text-decoration: none;
+        color: #ffffff;
+        padding: 15px 0;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        border-radius: 8px;
+        font-size: 2rem;
+        font-family: "Eagles-Bold", sans-serif;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-futures {
+        background-color: #ff6600;
+      }
+      .btn-development {
+        background-color: #1c1e3c;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* 모바일 최적화 */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.2rem;
+          margin: 20px 0 10px 0;
+        }
+
+        iframe {
+          height: 500px; /* 모바일은 버튼을 보기 위해 높이 축소 */
+        }
+
+        .calendar-container {
+          width: 98%;
+          border-radius: 8px;
+        }
+
+        .nav-btn {
+          font-size: 1.6rem;
+          padding: 12px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <a href="index.html" class="header-link">
+        <div class="header-container">
+          <img src="images/italic.png" alt="Emblem" class="emblem" />
+          <h1 id="main-title">월간 스케줄</h1>
+        </div>
+      </a>
+    </h1>
+
+    <div class="calendar-container">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?height=804&wkst=1&ctz=Asia%2FSeoul&showPrint=0&showTabs=0&showCalendars=0&showTz=0&showTitle=0&mode=MONTH&hl=ko&src=MGU2MjA5MmYzYWMwNGQ3ODBhYjFjY2NjY2I0MjhlMjExOWYyODIzYmU2ZjU5MTEyY2MwZTQyN2Q4NDNhMDY5NUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=Y2E5NTAyZTUxZDBiMGJkMDdlYWE4YWI3ZGJiYzM5MjViNjk1NzY0MzliMDY0MmIwNzJkYzc5MDE1ZWVkOGQxMUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23f37321&color=%23a8fc68"
+        scrolling="no"
+      ></iframe>
+    </div>
+
+    <div class="bottom-link-container">
+      <a href="futures.html" class="nav-btn btn-futures">퓨처스 스케줄 보기</a>
+      <a href="development.html" class="nav-btn btn-development"
+        >육성군 스케줄 보기</a
+      >
+    </div>
+  </body>
+</html>
