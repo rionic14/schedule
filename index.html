@@ -146,8 +146,45 @@
 
       window.onload = setEaglesDate;
     </script>
+<div class="bottom-quote">
+  <span class="big-text">본 포털에 업로드 된 모든 문서가</span>
+  <span class="secret">대외비</span>
+  <span class="big-text">입니다. <br>관리에 각별히 주의하시기 바랍니다.</span>
+</div>
 
-대외비다 잘봐나라
+<style>
+  /* 1. 상단 폰트 선언부와 이름 매칭 (Eagles-Bold 확인) */
+  .bottom-quote {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    line-height: 1.8;
+  }
+
+  .big-text {
+    font-family: "Eagles-Gothic", sans-serif;
+    font-size: 1.5rem;
+    color: #333;
+    vertical-align: middle;
+  }
+
+  .secret {
+    /* 아까 오타났던 Eagles-G를 Eagles-Bold로 수정 */
+    font-family: "Eagles-Gothic", sans-serif;
+    font-size: 3rem; 
+    color: #ff2a00; /* 강렬한 레드/오렌지 */
+    font-weight: bold;
+    display: block; /* '대외비'만 한 줄을 차지하도록 강제 */
+    margin: 1px 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  /* 모바일 대응 (반드시 필요) */
+  @media (max-width: 768px) {
+    .big-text { font-size: 1.2rem; }
+    .secret { font-size: 2.2rem; }
+  }
+</style>
 
 </body>
 </html>
